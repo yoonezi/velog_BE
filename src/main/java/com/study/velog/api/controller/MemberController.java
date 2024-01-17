@@ -19,14 +19,14 @@ public class MemberController {
     @PostMapping
     public Long join(@Valid @RequestBody CreateMemberRequest request)
     {
-        CreateMemberServiceRequest serviceDto = CreateMemberRequest.toServcieDto(request);
+        CreateMemberServiceRequest serviceDto = request.toServiceDto();
         return memberService.join(serviceDto);
     }
 
-    @PutMapping
-    public Long updateMember(@Valid @RequestBody UpdateMemberRequest request)
+    @PutMapping("/{memberId}")
+    public Long updateMember(@PathVariable Long memberId, @Valid @RequestBody UpdateMemberRequest request)
     {
-        UpdateMemberServiceRequest serviceDto = UpdateMemberRequest.toServiceDto(request);
+        UpdateMemberServiceRequest serviceDto = request.toServiceDto(memberId, request);
         return memberService.updateMember(serviceDto);
     }
 

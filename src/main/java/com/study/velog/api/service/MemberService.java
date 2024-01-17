@@ -2,6 +2,8 @@ package com.study.velog.api.service;
 
 import com.study.velog.api.service.dto.CreateMemberServiceRequest;
 import com.study.velog.api.service.dto.UpdateMemberServiceRequest;
+import com.study.velog.config.exception.ApiException;
+import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,9 @@ public class MemberService {
 
     public Long updateMember(UpdateMemberServiceRequest request)
     {
-        Member member = memberRepository.findById(request.memberId()).orElseThrow();
+        Member member = memberRepository.findById(request.memberId()).orElseThrow(
+                () -> new ApiException(ErrorCode.MEMBER_NOT_FOUND)
+        );
         member.update(request.email(), request.nickname());
         return member.getMemberId();
     }
