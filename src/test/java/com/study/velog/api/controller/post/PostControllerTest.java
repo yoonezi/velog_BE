@@ -1,8 +1,9 @@
-package com.study.velog.api.controller;
+package com.study.velog.api.controller.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.velog.api.controller.dto.CreateMemberRequest;
-import com.study.velog.api.service.MemberService;
+import com.study.velog.api.controller.post.dto.request.CreatePostRequest;
+import com.study.velog.api.controller.post.dto.request.UpdatePostRequest;
+import com.study.velog.api.service.post.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,11 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MemberController.class)
-class MemberControllerTest {
+
+@WebMvcTest(controllers = PostController.class)
+class PostControllerTest {
 
     @MockBean
-    MemberService memberService;
+    PostService postService;
 
     @Autowired
     MockMvc mockMvc;
@@ -28,42 +30,49 @@ class MemberControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    void invalidEmail() throws Exception
+    void save_invalidTitle() throws Exception
     {
-        CreateMemberRequest request = CreateMemberRequest.builder()
-                .email("sss")
-                .nickname("ddddd")
+        // given
+        CreatePostRequest request = CreatePostRequest.builder()
+                .memberId(1L)
+                .title("")
+                .content("content")
                 .build();
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/post")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 // then
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("이메일 형식이 아닙니다"))
+                .andExpect(jsonPath("$.message").value("제목은 필수입니다."))
                 .andExpect(jsonPath("$.status").value("400"));
     }
+
 
     @Test
-    void invalidNickName() throws Exception
+    void update_inValidTitle() throws Exception
     {
-        CreateMemberRequest request = CreateMemberRequest.builder()
-                .email("sss@naver.com")
-                .nickname("")
+        // given
+        UpdatePostRequest request = UpdatePostRequest.builder()
+                .title("")
+                .content("content")
                 .build();
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/post")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 // then
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("닉네임은 필수입니다"))
+                .andExpect(jsonPath("$.message").value("제목은 필수입니다."))
                 .andExpect(jsonPath("$.status").value("400"));
     }
+
+
+
 }

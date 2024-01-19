@@ -1,12 +1,13 @@
-package com.study.velog.api.service;
+package com.study.velog.api.service.member;
 
-import com.study.velog.api.service.dto.CreateMemberServiceRequest;
-import com.study.velog.api.service.dto.UpdateMemberServiceRequest;
+import com.study.velog.api.service.member.dto.request.CreateMemberServiceRequest;
+import com.study.velog.api.service.member.dto.request.UpdateMemberServiceRequest;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,15 +32,15 @@ public class MemberService {
     public Long updateMember(UpdateMemberServiceRequest request)
     {
         Member member = memberRepository.findById(request.memberId()).orElseThrow(
-                () -> new ApiException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+                () -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
         member.update(request.email(), request.nickname());
         return member.getMemberId();
     }
 
     public void deleteMember(Long memberId)
     {
-        Member member = memberRepository.findById(memberId).orElseThrow();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow( () -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
         memberRepository.delete(member);
     }
 

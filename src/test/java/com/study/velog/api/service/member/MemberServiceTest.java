@@ -1,7 +1,7 @@
-package com.study.velog.api.service;
+package com.study.velog.api.service.member;
 
-import com.study.velog.api.service.dto.CreateMemberServiceRequest;
-import com.study.velog.api.service.dto.UpdateMemberServiceRequest;
+import com.study.velog.api.service.member.dto.request.CreateMemberServiceRequest;
+import com.study.velog.api.service.member.dto.request.UpdateMemberServiceRequest;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +25,8 @@ class MemberServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
-    @DisplayName("멤버 생성")
     @Test
+    @DisplayName("멤버 생성")
     void join()
     {
         //given
@@ -37,18 +37,18 @@ class MemberServiceTest {
 
         //when
         Long memberId = memberService.join(request);
+        List<Member> members = memberRepository.findAll();
+        Member member = members.get(0);
 
         //then
-        List<Member> members = memberRepository.findAll();
         assertThat(members).hasSize(1);
-        Member member = members.get(0);
         assertThat(memberId).isEqualTo(member.getMemberId());
         assertThat(member).extracting(Member::getNickname, Member::getEmail)
                 .contains("memberA", "memberA@gmail.com");
     }
 
-    @DisplayName("닉네임 업데이트")
     @Test
+    @DisplayName("닉네임 업데이트")
     void updateMember()
     {
         //given
@@ -75,6 +75,7 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("멤버 삭제")
     void deleteMember()
     {
         //given
@@ -86,9 +87,9 @@ class MemberServiceTest {
 
         //when
         memberService.deleteMember(member.getMemberId());
-        List<Member> memberList = memberRepository.findAll();
+        List<Member> members = memberRepository.findAll();
 
         //then
-        assertThat(memberList).isEmpty();
+        assertThat(members).isEmpty();
     }
 }

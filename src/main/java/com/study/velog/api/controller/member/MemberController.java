@@ -1,10 +1,10 @@
-package com.study.velog.api.controller;
+package com.study.velog.api.controller.member;
 
-import com.study.velog.api.controller.dto.CreateMemberRequest;
-import com.study.velog.api.controller.dto.UpdateMemberRequest;
-import com.study.velog.api.service.MemberService;
-import com.study.velog.api.service.dto.CreateMemberServiceRequest;
-import com.study.velog.api.service.dto.UpdateMemberServiceRequest;
+import com.study.velog.api.controller.member.dto.CreateMemberRequest;
+import com.study.velog.api.controller.member.dto.UpdateMemberRequest;
+import com.study.velog.api.service.member.MemberService;
+import com.study.velog.api.service.member.dto.request.CreateMemberServiceRequest;
+import com.study.velog.api.service.member.dto.request.UpdateMemberServiceRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

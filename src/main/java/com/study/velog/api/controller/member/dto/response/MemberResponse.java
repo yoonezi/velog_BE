@@ -1,4 +1,4 @@
-package com.study.velog.api.service.dto.response;
+package com.study.velog.api.controller.member.dto.response;
 
 import com.study.velog.domain.member.Member;
 import lombok.Builder;

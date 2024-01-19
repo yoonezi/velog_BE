@@ -1,17 +1,17 @@
 package com.study.velog.domain.member;
 
+import com.study.velog.domain.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
+    @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
@@ -21,8 +21,12 @@ public class Member {
     private String nickname;
 
     @Builder
-    public Member(String email, String nickname)
-    {
+    public Member(
+            Long memberId,
+            String email,
+            String nickname
+    ) {
+        this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
     }
@@ -33,21 +37,19 @@ public class Member {
         setNickname(nickname);
     }
 
-    private void setNickname(String nickname)
+    private void setEmail(String email)
     {
-        if (nickname == null || nickname.isBlank())
-        {
-            return ;
-        }
-        this.nickname = nickname;
-    }
-
-    private void setEmail(String email) 
-    {
-        if (email == null || email.isBlank())
-        {
-            return ;
+        if (email == null || email.isBlank()) {
+            return;
         }
         this.email = email;
+    }
+
+    private void setNickname(String nickname)
+    {
+        if (nickname == null || nickname.isBlank()) {
+            return;
+        }
+        this.nickname = nickname;
     }
 }
