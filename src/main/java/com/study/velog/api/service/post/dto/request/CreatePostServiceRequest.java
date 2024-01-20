@@ -1,5 +1,6 @@
 package com.study.velog.api.service.post.dto.request;
 
+import com.study.velog.domain.type.PostCategory;
 import lombok.Builder;
 
 import java.util.List;
@@ -9,5 +10,6 @@ public record CreatePostServiceRequest(
         Long memberId,
         String title,
         String content,
-        List<String> tagList
+        List<String> tagList,
+        PostCategory categoryType
 ) {}

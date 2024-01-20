@@ -12,6 +12,10 @@ public enum ErrorCode {
 
     //Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버가 없습니다."),
+
+    //Comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버가 없습니다."),
+
     ;
     private final HttpStatus httpStatus;
     private final String errorMessage;

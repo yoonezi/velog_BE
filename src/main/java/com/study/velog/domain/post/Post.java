@@ -1,6 +1,7 @@
 package com.study.velog.domain.post;
 
 import com.study.velog.domain.BaseTimeEntity;
+import com.study.velog.domain.type.PostCategory;
 import com.study.velog.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,25 +31,31 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private PostCategory categoryType;
+
     @Builder
     public Post(
             Long postId,
             Member member,
             String content,
             String title,
-            List<PostTag> postTags
+            List<PostTag> postTags,
+            PostCategory categoryType
     ) {
         this.postId = postId;
         this.member = member;
         this.content = content;
         this.title = title;
         this.postTags = postTags;
+        this.categoryType = categoryType;
     }
 
-    public void update(String title, String content)
+    public void update(String title, String content, PostCategory categoryType)
     {
         setTitle(title);
         setContent(content);
+        setCategoryType(categoryType);
     }
 
     private void setTitle(String title)
@@ -78,5 +85,20 @@ public class Post extends BaseTimeEntity {
 
         this.postTags.add(postTag);
         postTag.setPost(this);
+    }
+
+    private void setCategoryType(PostCategory categoryType)
+    {
+        if (categoryType == null)
+        {
+            return;
+        }
+
+        this.categoryType = categoryType;
+    }
+
+    public void addPostTags(List<PostTag> postTags)
+    {
+        postTags.forEach(this::addPostTag);
     }
 }

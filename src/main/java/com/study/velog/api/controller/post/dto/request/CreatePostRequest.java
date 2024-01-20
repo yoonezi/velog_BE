@@ -1,7 +1,9 @@
 package com.study.velog.api.controller.post.dto.request;
 
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
+import com.study.velog.domain.type.PostCategory;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.util.List;
@@ -12,7 +14,9 @@ public record CreatePostRequest (
         @NotBlank(message = "제목은 필수입니다.")
         String title,
         String content,
-        List<String> tagList
+        List<String> tagList,
+        @NotNull(message = "카테고리는 필수입니다.")
+        PostCategory categoryType
         // Tag Post ==>
         // Tag (1, 'tag1')
         // Tag (2, 'tag2')
@@ -45,6 +49,7 @@ public record CreatePostRequest (
                 .title(this.title)
                 .content(this.content)
                 .tagList(this.tagList)
+                .categoryType(this.categoryType)
                 .build();
     }
 }

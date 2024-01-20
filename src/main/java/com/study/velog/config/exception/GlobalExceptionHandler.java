@@ -41,11 +41,11 @@ public class GlobalExceptionHandler {
         return ErrorResponse.apiError(errorCode);
     }
 
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(Exception.class)
-//    public ErrorResponse handleException(Exception exception)
-//    {
-//        log.error("exception class : {}", exception.getClass());
-//        return ErrorResponse.error(exception.getMessage());
-//    }
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorResponse handleException(Exception exception)
+    {
+        log.error("exception class : {}", exception.getClass());
+        return ErrorResponse.error(exception.getMessage());
+    }
 }

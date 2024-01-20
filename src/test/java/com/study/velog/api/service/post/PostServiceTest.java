@@ -8,12 +8,14 @@ import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostRepository;
 import com.study.velog.domain.tag.TagRepository;
+import com.study.velog.domain.type.PostCategory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +51,7 @@ class PostServiceTest {
                 .title("title")
                 .content("content")
                 .tagList(Lists.newArrayList("tag1", "tag2"))
+                .categoryType(PostCategory.AI)
                 .build();
 
         // when
@@ -70,6 +73,8 @@ class PostServiceTest {
         Post post = postRepository.save(Post.builder()
                 .title("title")
                 .content("content")
+                .categoryType(PostCategory.AI)
+                .postTags(new ArrayList<>())
                 .build());
 
         UpdatePostServiceRequest request = UpdatePostServiceRequest.builder()
