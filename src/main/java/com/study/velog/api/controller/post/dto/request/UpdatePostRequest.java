@@ -16,15 +16,16 @@ public record UpdatePostRequest(
         List<String> tagList,
         @NotNull(message = "카테고리는 필수입니다.")
         PostCategory categoryType
+
 ) {
-    public UpdatePostServiceRequest toServiceDto(Long postId,UpdatePostRequest request)
+    public UpdatePostServiceRequest toServiceDto(Long postId)
     {
         return UpdatePostServiceRequest.builder()
                 .postId(postId)
-                .title(request.title)
-                .content(request.content)
-                .tagList(request.tagList)
-                .categoryType(request.categoryType)
+                .title(this.title)
+                .content(this.content)
+                .tagList(this.tagList)
+                .categoryType(this.categoryType)
                 .build();
     }
 }

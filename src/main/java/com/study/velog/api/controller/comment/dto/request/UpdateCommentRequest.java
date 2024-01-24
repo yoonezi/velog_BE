@@ -8,17 +8,13 @@ import lombok.Builder;
 public record UpdateCommentRequest (
         Long commentId,
         @NotBlank(message = "내용은 필수입니다.")
-        String content,
-        Long memberId,
-        Long postId
+        String content
 ) {
-    public static UpdateCommentServiceRequest toServiceDto(UpdateCommentRequest request)
+    public UpdateCommentServiceRequest toServiceDto(Long commentId)
     {
         return UpdateCommentServiceRequest.builder()
-                .commentId(request.commentId)
-                .content(request.content)
-                .postId(request.postId)
-                .memberId(request.memberId)
+                .commentId(commentId)
+                .content(this.content)
                 .build();
     }
 }

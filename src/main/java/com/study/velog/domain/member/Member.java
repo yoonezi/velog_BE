@@ -1,5 +1,7 @@
 package com.study.velog.domain.member;
 
+import com.study.velog.config.exception.ApiException;
+import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,15 +22,31 @@ public class Member extends BaseTimeEntity {
 
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus;
+
     @Builder
     public Member(
             Long memberId,
             String email,
-            String nickname
+            String nickname,
+            MemberStatus memberStatus
     ) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
+        this.memberStatus = memberStatus;
+    }
+
+    public static Member create(
+            String email,
+            String nickname
+    ) {
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .memberStatus(MemberStatus.SERVICED)
+                .build();
     }
 
     public void update(String email, String nickname)
@@ -51,5 +69,15 @@ public class Member extends BaseTimeEntity {
             return;
         }
         this.nickname = nickname;
+    }
+
+    public void delete()
+    {
+        if (memberStatus.equals(MemberStatus.DELETED))
+        {
+            throw new ApiException(ErrorCode.POST_STATUS_DELETED);
+        }
+
+        this.memberStatus =MemberStatus.DELETED;
     }
 }

@@ -5,6 +5,7 @@ import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
+import com.study.velog.domain.member.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,12 @@ public class MemberSearchController {
     {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.getMemberStatus() == MemberStatus.DELETED)
+        {
+            throw new ApiException(ErrorCode.POST_STATUS_DELETED);
+        }
+
         return MemberResponse.of(member);
     }
 }

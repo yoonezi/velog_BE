@@ -9,4 +9,6 @@ import org.springframework.data.repository.query.Param;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("select c from Comment c where c.post.postId = :postId")
     Page<Comment> findByPostIdWithPage(@Param("postId") Long postId, Pageable pageRequest);
+
+//    Optional<Comment> findByCommentIdAndCommentStatus(Long commentId, CommentStatus commentStatus);
 }

@@ -27,7 +27,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public Long updatePost(@PathVariable Long postId, @Valid @RequestBody UpdatePostRequest request)
     {
-        UpdatePostServiceRequest serviceDto = request.toServiceDto(postId, request);
+        UpdatePostServiceRequest serviceDto = request.toServiceDto(postId);
         return postService.updatePost(serviceDto);
     }
 

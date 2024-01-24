@@ -12,6 +12,7 @@ public record CreateMemberRequest (
 
         @NotBlank(message = "닉네임은 필수입니다.")
         String nickname
+
 ) {
     public CreateMemberServiceRequest toServiceDto()
     {

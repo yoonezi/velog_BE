@@ -13,19 +13,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/comment")
 public class CommentController {
+
     private final CommentService commentService;
 
     @PostMapping
     public Long createComment(@Valid @RequestBody CreateCommentRequest request)
     {
-        CreateCommentServiceRequest serviceDto = CreateCommentRequest.toServiceDto(request);
+        CreateCommentServiceRequest serviceDto = request.toServiceDto();
         return commentService.createComment(serviceDto);
     }
 
-    @PutMapping
-    public Long updateComment(@Valid @RequestBody UpdateCommentRequest request)
+    @PutMapping("/{commentId}")
+    public Long updateComment(@PathVariable Long commentId, @Valid @RequestBody UpdateCommentRequest request)
     {
-        UpdateCommentServiceRequest serviceDto = UpdateCommentRequest.toServiceDto(request);
+        UpdateCommentServiceRequest serviceDto = request.toServiceDto(commentId);
         return commentService.updateComment(serviceDto);
     }
 

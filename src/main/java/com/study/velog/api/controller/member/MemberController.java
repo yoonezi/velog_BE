@@ -23,16 +23,18 @@ public class MemberController {
         return memberService.join(serviceDto);
     }
 
-    @PutMapping("/{memberId}")
-    public Long updateMember(@PathVariable Long memberId, @Valid @RequestBody UpdateMemberRequest request)
+    // TODO 확인
+    @PutMapping()
+    public Long updateMember(@Valid @RequestBody UpdateMemberRequest request)
     {
-        UpdateMemberServiceRequest serviceDto = request.toServiceDto(memberId, request);
+        UpdateMemberServiceRequest serviceDto = request.toServiceDto();
         return memberService.updateMember(serviceDto);
     }
 
-    @DeleteMapping("/{memberId}")
-    public void deleteMember(@PathVariable Long memberId)
+    // TODO 확인
+    @DeleteMapping()
+    public void deleteMember()
     {
-        memberService.deleteMember(memberId);
+        memberService.deleteMember();
     }
 }

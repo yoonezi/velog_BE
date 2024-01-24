@@ -1,8 +1,10 @@
 package com.study.velog.domain.post;
 
+import com.study.velog.config.exception.ApiException;
+import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.BaseTimeEntity;
-import com.study.velog.domain.type.PostCategory;
 import com.study.velog.domain.member.Member;
+import com.study.velog.domain.type.PostCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,11 +30,14 @@ public class Post extends BaseTimeEntity {
 
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private PostCategory categoryType;
+
+    @Enumerated(EnumType.STRING)
+    private PostStatus postStatus;
 
     @Builder
     public Post(
@@ -41,7 +46,8 @@ public class Post extends BaseTimeEntity {
             String content,
             String title,
             List<PostTag> postTags,
-            PostCategory categoryType
+            PostCategory categoryType,
+            PostStatus postStatus
     ) {
         this.postId = postId;
         this.member = member;
@@ -49,6 +55,22 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.postTags = postTags;
         this.categoryType = categoryType;
+        this.postStatus = postStatus;
+    }
+
+    public static Post create(
+            Member member,
+            String content,
+            String title,
+            PostCategory categoryType
+    ) {
+        return Post.builder()
+                .member(member)
+                .content(content)
+                .title(title)
+                .categoryType(categoryType)
+                .postStatus(PostStatus.SERVICED)
+                .build();
     }
 
     public void update(String title, String content, PostCategory categoryType)
@@ -97,8 +119,23 @@ public class Post extends BaseTimeEntity {
         this.categoryType = categoryType;
     }
 
-    public void addPostTags(List<PostTag> postTags)
+    private void setPostStatus(PostStatus postStatus)
     {
-        postTags.forEach(this::addPostTag);
+        if (postStatus == null)
+        {
+            return;
+        }
+
+        this.postStatus = postStatus;
+    }
+
+    public void delete()
+    {
+        if (postStatus.equals(PostStatus.DELETED))
+        {
+            throw new ApiException(ErrorCode.POST_STATUS_DELETED);
+        }
+
+        this.postStatus = PostStatus.DELETED;
     }
 }

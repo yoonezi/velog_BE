@@ -5,6 +5,7 @@ import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostRepository;
+import com.study.velog.domain.post.PostStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,12 @@ public class PostSearchController {
     {
         Post post = postRepository.findPostWithFetch(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+
+        if (!PostStatus.SERVICED.equals(post.getPostStatus()))
+        {
+            throw new ApiException(ErrorCode.INVALID_ACCESS_POST);
+        }
+
         return PostResponse.of(post);
     }
 }

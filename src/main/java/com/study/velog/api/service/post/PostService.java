@@ -2,6 +2,7 @@ package com.study.velog.api.service.post;
 
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
+import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
@@ -31,18 +32,14 @@ public class PostService {
 
     public Long createPost(CreatePostServiceRequest request)
     {
-        Member member = memberRepository.findById(request.memberId())
+        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Post post = Post.builder()
-                .member(member)
-                .content(request.content())
-                .title(request.title())
-                .categoryType(request.categoryType())
-                .build();
+        Post post = Post.create(member, request.content(), request.title(), request.categoryType());
 
         List<PostTag> postTags = createPostTagList(request.tagList());
         postTags.forEach(post::addPostTag);
+
         return postRepository.save(post).getPostId();
     }
 
@@ -74,14 +71,21 @@ public class PostService {
 
     public Long updatePost(UpdatePostServiceRequest request)
     {
+        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
+                .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
         Post post = postRepository.findPostWithFetch(request.postId())
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+
+        if (!post.getMember().getMemberId().equals(member.getMemberId()))
+        {
+            throw new ApiException(ErrorCode.INVALID_ACCESS_POST);
+        }
 
         List<Tag> newTags = createNewTags(post, request.tagList());
         tagRepository.saveAll(newTags);
 
         updatePostTag(post, newTags, request.tagList());
-
         post.update(request.title(), request.content(), request.categoryType());
 
         return post.getPostId();
@@ -107,8 +111,17 @@ public class PostService {
 
     public void deletePost(Long postId)
     {
+        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
+                .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
-        postRepository.delete(post);
+
+        if (!post.getMember().getMemberId().equals(member.getMemberId()))
+        {
+            throw new ApiException(ErrorCode.INVALID_ACCESS_POST);
+        }
+
+        post.delete();
     }
 }
