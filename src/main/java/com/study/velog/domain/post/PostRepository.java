@@ -18,4 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p where p.title like concat ('%', :param, '%')")
     Page<Post> findAllBy(@Param("param") String title, Pageable pageable);
+
+    @Query("select p from Post p left join fetch p.postImageList " +
+            "left join fetch p.member")
+    Page<Post> findMainPosts(Pageable pageable);
 }

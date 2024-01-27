@@ -46,9 +46,8 @@ public class PostLikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
-        Optional<PostLike> postLike = postLikeRepository
-                .findByPostLike(post.getPostId(), member.getEmail());
-
-        postLike.ifPresent(PostLike::delete);
+        postLikeRepository
+                .findByPostLike(post.getPostId(), member.getEmail())
+                .ifPresent(PostLike::delete);
     }
 }

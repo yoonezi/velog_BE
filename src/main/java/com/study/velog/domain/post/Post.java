@@ -39,6 +39,9 @@ public class Post extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> postImageList = new ArrayList<>();
+
     @Builder
     public Post(
             Long postId,
@@ -47,7 +50,8 @@ public class Post extends BaseTimeEntity {
             String title,
             List<PostTag> postTags,
             PostCategory categoryType,
-            PostStatus postStatus
+            PostStatus postStatus,
+            List<PostImage> postImageList
     ) {
         this.postId = postId;
         this.member = member;
@@ -56,6 +60,7 @@ public class Post extends BaseTimeEntity {
         this.postTags = postTags;
         this.categoryType = categoryType;
         this.postStatus = postStatus;
+        this.postImageList = postImageList;
     }
 
     public static Post create(
@@ -73,11 +78,12 @@ public class Post extends BaseTimeEntity {
                 .build();
     }
 
-    public void update(String title, String content, PostCategory categoryType)
+    public void update(String title, String content, PostCategory categoryType, List<PostImage> postImages)
     {
         setTitle(title);
         setContent(content);
         setCategoryType(categoryType);
+        setPostImage(postImages);
     }
 
     private void setTitle(String title)
@@ -119,14 +125,21 @@ public class Post extends BaseTimeEntity {
         this.categoryType = categoryType;
     }
 
-    private void setPostStatus(PostStatus postStatus)
+    public void addPostImage(PostImage postImage)
     {
-        if (postStatus == null)
+        if (this.postImageList == null)
         {
-            return;
+            this.postImageList = new ArrayList<>();
         }
 
-        this.postStatus = postStatus;
+        this.getPostImageList().add(postImage);
+        postImage.setPost(this);
+    }
+
+    private void setPostImage(List<PostImage> postImages)
+    {
+        this.getPostImageList().clear();
+        this.getPostImageList().addAll(postImages);
     }
 
     public void delete()

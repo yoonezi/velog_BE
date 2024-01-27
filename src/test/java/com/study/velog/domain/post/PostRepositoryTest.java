@@ -8,7 +8,10 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -55,4 +58,47 @@ class PostRepositoryTest {
         System.out.println(postWithFetch.get());
   }
 
+  @Test
+  void findMainPosts()
+  {
+      // given
+      Member member = memberRepository.save(Member.builder().email("email@gmail.com").nickname("nickname").build());
+
+      List<PostImage> postsImages1 = List.of(
+              PostImage.builder().imageOrder(1).url("url1").build(),
+              PostImage.builder().imageOrder(2).url("url2").build()
+      );
+
+      Post post1 = Post.builder()
+              .content("content")
+              .title("title")
+              .member(member)
+              .build();
+
+      postsImages1.forEach(postImage -> post1.addPostImage(postImage));
+
+      List<PostImage> postsImages2 = List.of(
+              PostImage.builder().imageOrder(1).url("url3").build(),
+              PostImage.builder().imageOrder(2).url("url4").build()
+      );
+
+      Post post2 = Post.builder()
+              .content("content")
+              .title("title")
+              .member(member)
+              .build();
+
+      postsImages2.forEach(postImage -> post2.addPostImage(postImage));
+      postRepository.save(post1);
+      postRepository.save(post2);
+
+      // when
+      Page<Post> mainPosts = postRepository.findMainPosts(PageRequest.of(0, 3));
+
+      List<Post> posts = mainPosts.getContent();
+      for (Post post : posts)
+      {
+          System.out.println(post.getPostId() + " ,  " + post.getPostImageList());
+      }
+  }
 }

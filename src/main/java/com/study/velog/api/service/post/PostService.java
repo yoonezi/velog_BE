@@ -2,12 +2,14 @@ package com.study.velog.api.service.post;
 
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
+import com.study.velog.api.service.postImage.dto.request.CreatePostImageServiceRequest;
 import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.post.Post;
+import com.study.velog.domain.post.PostImage;
 import com.study.velog.domain.post.PostRepository;
 import com.study.velog.domain.post.PostTag;
 import com.study.velog.domain.tag.Tag;
@@ -40,7 +42,20 @@ public class PostService {
         List<PostTag> postTags = createPostTagList(request.tagList());
         postTags.forEach(post::addPostTag);
 
+        List<PostImage> postImageList = createPostImageList(request.postImageRequestList());
+        postImageList.forEach(post::addPostImage);
+
         return postRepository.save(post).getPostId();
+    }
+
+    private List<PostImage> createPostImageList(List<CreatePostImageServiceRequest> postImages)
+    {
+        return postImages.stream()
+                .map(request -> PostImage.builder()
+                        .url(request.url())
+                        .imageOrder(request.order())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<PostTag> createPostTagList(List<String> tagList)
@@ -84,11 +99,23 @@ public class PostService {
 
         List<Tag> newTags = createNewTags(post, request.tagList());
         tagRepository.saveAll(newTags);
-
         updatePostTag(post, newTags, request.tagList());
-        post.update(request.title(), request.content(), request.categoryType());
+
+        List<PostImage> postImages = updatePostImageList(request);
+
+        post.update(request.title(), request.content(), request.categoryType(), postImages);
 
         return post.getPostId();
+    }
+
+    private static List<PostImage> updatePostImageList(UpdatePostServiceRequest request)
+    {
+        return request.postImageRequestList().stream()
+                .map(postImageRequest -> PostImage.builder()
+                        .url(postImageRequest.url())
+                        .imageOrder(postImageRequest.order())
+                        .build())
+                .toList();
     }
 
     private List<Tag> createNewTags(Post post, List<String> requestTags)

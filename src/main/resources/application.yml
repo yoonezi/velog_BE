@@ -12,7 +12,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
+post:
+  image:
+    upload:
+      path: /Users/yoonezi/Desktop/images/
 #
 #logging.level:
 #  org.hibernate.SQL: debug

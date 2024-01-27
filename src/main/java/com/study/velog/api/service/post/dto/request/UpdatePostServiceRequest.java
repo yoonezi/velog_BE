@@ -1,5 +1,6 @@
 package com.study.velog.api.service.post.dto.request;
 
+import com.study.velog.api.service.postImage.dto.request.UpdatePostImageServiceRequest;
 import com.study.velog.domain.type.PostCategory;
 import lombok.Builder;
 
@@ -11,5 +12,6 @@ public record UpdatePostServiceRequest (
         String title,
         String content,
         List<String> tagList,
-        PostCategory categoryType
+        PostCategory categoryType,
+        List<UpdatePostImageServiceRequest> postImageRequestList
 ) {}

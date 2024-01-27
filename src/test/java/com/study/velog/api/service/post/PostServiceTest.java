@@ -50,6 +50,7 @@ class PostServiceTest {
                 .content("content")
                 .tagList(Lists.newArrayList("tag1", "tag2"))
                 .categoryType(PostCategory.AI)
+                .postImageRequestList(new ArrayList<>())
                 .build();
 
         // when
@@ -78,6 +79,7 @@ class PostServiceTest {
                 .categoryType(PostCategory.AI)
                 .postTags(new ArrayList<>())
                 .postStatus(PostStatus.SERVICED)
+                .postImageList(new ArrayList<>())
                 .build());
 
         UpdatePostServiceRequest request = UpdatePostServiceRequest.builder()
@@ -86,6 +88,7 @@ class PostServiceTest {
                 .content(post.getContent())
                 .tagList(Lists.newArrayList("tag1", "tag2"))
                 .categoryType(post.getCategoryType())
+                .postImageRequestList(new ArrayList<>())
                 .build();
 
         // when

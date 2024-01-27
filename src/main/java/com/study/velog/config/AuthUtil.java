@@ -6,4 +6,14 @@ public class AuthUtil {
     {
         return DataInit.MASTER_EMAIL;
     }
+
+    public static String currentNickName()
+    {
+        return DataInit.MASTER;
+    }
+
+    public static Long currentUserId()
+    {
+        return DataInit.MASTER_ID;
+    }
 }

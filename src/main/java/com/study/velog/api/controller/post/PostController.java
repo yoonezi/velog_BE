@@ -8,6 +8,7 @@ import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class PostController {
 
     private final PostService postService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Long createPost(@Valid @RequestBody CreatePostRequest request)
     {
@@ -31,9 +33,11 @@ public class PostController {
         return postService.updatePost(serviceDto);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable Long postId)
     {
         postService.deletePost(postId);
     }
+
 }
