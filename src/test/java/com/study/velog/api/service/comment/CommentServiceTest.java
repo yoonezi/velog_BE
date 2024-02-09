@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,11 +47,15 @@ class CommentServiceTest {
     void createComment()
     {
         // given
+        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
+                .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
         Post post = postRepository.save(Post.builder()
                 .title("title")
                 .content("content")
+                .member(member)
                 .categoryType(PostCategory.AI)
-                .postTags(new ArrayList<>())
+                .postTags(new HashSet<>())
                 .postStatus(PostStatus.SERVICED)
                 .build());
 
@@ -85,7 +89,7 @@ class CommentServiceTest {
                 .title("title")
                 .content("content")
                 .categoryType(PostCategory.AI)
-                .postTags(new ArrayList<>())
+                .postTags(new HashSet<>())
                 .build());
 
         Comment comment = commentRepository.save(Comment.builder()
@@ -120,7 +124,7 @@ class CommentServiceTest {
                 .title("title")
                 .content("content")
                 .categoryType(PostCategory.AI)
-                .postTags(new ArrayList<>())
+                .postTags(new HashSet<>())
                 .build());
 
         Comment comment = commentRepository.save(Comment.builder()

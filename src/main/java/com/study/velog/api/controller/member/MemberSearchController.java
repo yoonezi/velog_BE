@@ -8,15 +8,13 @@ import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.member.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @RequestMapping("/api/member/search")
+@CrossOrigin("*")
 public class MemberSearchController {
 
     private final MemberRepository memberRepository;
@@ -25,6 +23,20 @@ public class MemberSearchController {
     public MemberResponse searchMember(@PathVariable Long memberId)
     {
         Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (member.getMemberStatus() == MemberStatus.DELETED)
+        {
+            throw new ApiException(ErrorCode.POST_STATUS_DELETED);
+        }
+
+        return MemberResponse.of(member);
+    }
+
+    @GetMapping("/email/{memberEmail}")
+    public MemberResponse searchMemberByEmail(@PathVariable String memberEmail)
+    {
+        Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (member.getMemberStatus() == MemberStatus.DELETED)

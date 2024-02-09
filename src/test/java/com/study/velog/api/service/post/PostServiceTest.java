@@ -3,12 +3,14 @@ package com.study.velog.api.service.post;
 import com.google.common.collect.Lists;
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
+import com.study.velog.api.service.postImage.dto.request.UpdatePostImageServiceRequest;
 import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.post.Post;
+import com.study.velog.domain.post.PostImage;
 import com.study.velog.domain.post.PostRepository;
 import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.tag.TagRepository;
@@ -20,7 +22,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,9 +81,12 @@ class PostServiceTest {
                 .title("title")
                 .content("content")
                 .categoryType(PostCategory.AI)
-                .postTags(new ArrayList<>())
+                .postTags(new HashSet<>())
                 .postStatus(PostStatus.SERVICED)
-                .postImageList(new ArrayList<>())
+                .postImageList(Set.of(
+                            PostImage.builder().url("a1").imageOrder(1).build()
+                        )
+                )
                 .build());
 
         UpdatePostServiceRequest request = UpdatePostServiceRequest.builder()
@@ -88,13 +95,15 @@ class PostServiceTest {
                 .content(post.getContent())
                 .tagList(Lists.newArrayList("tag1", "tag2"))
                 .categoryType(post.getCategoryType())
-                .postImageRequestList(new ArrayList<>())
+                .postImageRequestList(List.of(UpdatePostImageServiceRequest.builder().url("a1").order(1).build()))
                 .build();
 
         // when
         postService.updatePost(request);
         List<Post> posts = postRepository.findAll();
         Post findPost = posts.get(0);
+
+        System.out.println(findPost);
 
         // then
         assertThat(findPost).extracting(Post::getTitle, Post::getContent)
@@ -114,7 +123,7 @@ class PostServiceTest {
                 .title("title")
                 .content("content")
                 .categoryType(PostCategory.AI)
-                .postTags(new ArrayList<>())
+                .postTags(new HashSet<>())
                 .postStatus(PostStatus.SERVICED)
                 .build());
 

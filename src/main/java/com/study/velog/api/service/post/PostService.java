@@ -1,5 +1,7 @@
 package com.study.velog.api.service.post;
 
+import com.study.velog.api.service.feed.FollowFeedService;
+import com.study.velog.api.service.post.dto.PostCreatedEvent;
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
 import com.study.velog.api.service.postImage.dto.request.CreatePostImageServiceRequest;
@@ -15,6 +17,7 @@ import com.study.velog.domain.post.PostTag;
 import com.study.velog.domain.tag.Tag;
 import com.study.velog.domain.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
+    private final FollowFeedService followFeedService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public Long createPost(CreatePostServiceRequest request)
     {
@@ -44,8 +49,9 @@ public class PostService {
 
         List<PostImage> postImageList = createPostImageList(request.postImageRequestList());
         postImageList.forEach(post::addPostImage);
-
-        return postRepository.save(post).getPostId();
+        Post postSaved = postRepository.save(post);
+        applicationEventPublisher.publishEvent(PostCreatedEvent.of(postSaved.getPostId()));
+        return postSaved.getPostId();
     }
 
     private List<PostImage> createPostImageList(List<CreatePostImageServiceRequest> postImages)

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
+@CrossOrigin("*")
 public class MemberController {
 
     private final MemberService memberService;
@@ -19,21 +20,20 @@ public class MemberController {
     @PostMapping
     public Long join(@Valid @RequestBody CreateMemberRequest request)
     {
+
         CreateMemberServiceRequest serviceDto = request.toServiceDto();
         return memberService.join(serviceDto);
     }
 
-    // TODO 확인
-    @PutMapping()
-    public Long updateMember(@Valid @RequestBody UpdateMemberRequest request)
+    @PutMapping("/{memberId}")
+    public Long updateMember(@PathVariable Long memberId, @Valid @RequestBody UpdateMemberRequest request)
     {
         UpdateMemberServiceRequest serviceDto = request.toServiceDto();
         return memberService.updateMember(serviceDto);
     }
 
-    // TODO 확인
-    @DeleteMapping()
-    public void deleteMember()
+    @DeleteMapping("/{memberId}")
+    public void deleteMember(@PathVariable Long memberId)
     {
         memberService.deleteMember();
     }

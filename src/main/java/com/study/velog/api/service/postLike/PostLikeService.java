@@ -1,5 +1,6 @@
 package com.study.velog.api.service.postLike;
 
+import com.study.velog.api.service.feed.PostFeedService;
 import com.study.velog.api.service.postLike.dto.request.CreatePostLikeServiceRequest;
 import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
@@ -14,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final PostFeedService postFeedService;
 
     public Long like(CreatePostLikeServiceRequest request)
     {
@@ -34,6 +34,8 @@ public class PostLikeService {
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
         PostLike postLike = PostLike.create(post, member);
+
+        postFeedService.createPostLikePostFeed(post.getPostId(), post.getMember().getMemberId());
 
         return postLikeRepository.save(postLike).getPostLikeId();
     }
@@ -46,8 +48,6 @@ public class PostLikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
-        postLikeRepository
-                .findByPostLike(post.getPostId(), member.getEmail())
-                .ifPresent(PostLike::delete);
+        postLikeRepository.deleteByMemberAndPost(member, post);
     }
 }

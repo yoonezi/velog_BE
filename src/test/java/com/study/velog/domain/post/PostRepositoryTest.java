@@ -1,5 +1,6 @@
 package com.study.velog.domain.post;
 
+import com.study.velog.api.controller.post.dto.response.MainPostLikeCountOrder;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.tag.Tag;
@@ -7,14 +8,17 @@ import com.study.velog.domain.tag.TagRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@DataJpaTest
+@SpringBootTest
+@Transactional
 class PostRepositoryTest {
 
     @Autowired
@@ -93,12 +97,22 @@ class PostRepositoryTest {
       postRepository.save(post2);
 
       // when
-      Page<Post> mainPosts = postRepository.findMainPosts(PageRequest.of(0, 3));
+      Page<Post> mainPosts = postRepository.findTrendPosts(PageRequest.of(0, 3));
 
       List<Post> posts = mainPosts.getContent();
       for (Post post : posts)
       {
           System.out.println(post.getPostId() + " ,  " + post.getPostImageList());
       }
+  }
+
+  @Test
+  void dddd()
+  {
+      Sort s1 = Sort.by("vct").descending();
+      Sort s2 = Sort.by("ct").descending();
+      Sort s3 = Sort.by("vct").descending();
+      Page<MainPostLikeCountOrder> r = postRepository.readAllBy(PageRequest.of(0, 10, Sort.by("vct").descending()));
+      System.out.println(r.getContent());
   }
 }

@@ -7,9 +7,11 @@ import com.study.velog.domain.member.Member;
 import com.study.velog.domain.type.PostCategory;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,8 +32,9 @@ public class Post extends BaseTimeEntity {
 
     private String content;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<PostTag> postTags = new ArrayList<>();
+    private Set<PostTag> postTags = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private PostCategory categoryType;
@@ -39,8 +42,11 @@ public class Post extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostImage> postImageList = new ArrayList<>();
+    private Set<PostImage> postImageList = new HashSet<>();
+
+    private int viewCount;
 
     @Builder
     public Post(
@@ -48,10 +54,10 @@ public class Post extends BaseTimeEntity {
             Member member,
             String content,
             String title,
-            List<PostTag> postTags,
+            Set<PostTag> postTags,
             PostCategory categoryType,
             PostStatus postStatus,
-            List<PostImage> postImageList
+            Set<PostImage> postImageList
     ) {
         this.postId = postId;
         this.member = member;
@@ -108,7 +114,7 @@ public class Post extends BaseTimeEntity {
     {
         if (this.getPostTags() == null)
         {
-            this.postTags = new ArrayList<>();
+            this.postTags = new HashSet<>();
         }
 
         this.postTags.add(postTag);
@@ -129,7 +135,7 @@ public class Post extends BaseTimeEntity {
     {
         if (this.postImageList == null)
         {
-            this.postImageList = new ArrayList<>();
+            this.postImageList = new HashSet<>();
         }
 
         this.getPostImageList().add(postImage);
@@ -139,7 +145,7 @@ public class Post extends BaseTimeEntity {
     private void setPostImage(List<PostImage> postImages)
     {
         this.getPostImageList().clear();
-        this.getPostImageList().addAll(postImages);
+        postImages.forEach(postImage -> this.addPostImage(postImage));
     }
 
     public void delete()
@@ -150,5 +156,10 @@ public class Post extends BaseTimeEntity {
         }
 
         this.postStatus = PostStatus.DELETED;
+    }
+
+    public void setViewCount(int viewCount)
+    {
+        this.viewCount = viewCount;
     }
 }

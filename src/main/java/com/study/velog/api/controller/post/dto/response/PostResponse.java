@@ -1,10 +1,12 @@
 package com.study.velog.api.controller.post.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.type.PostCategory;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +19,10 @@ public record PostResponse(
         PostCategory categoryType,
         List<String> tagList,
         PostStatus postStatus,
-        List<PostImageList> postImageList
-
+        List<PostImageList> postImageList,
+        @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+        LocalDateTime registerDate,
+        int viewCount
 ) {
     public static PostResponse of(Post post)
     {
@@ -33,7 +37,9 @@ public record PostResponse(
                         .map(tag -> tag.getTag().getTagContent())
                         .toList(),
                 post.getPostStatus(),
-                getPostImageList(post)
+                getPostImageList(post),
+                post.getRegisterDate(),
+                post.getViewCount()
         );
     }
 

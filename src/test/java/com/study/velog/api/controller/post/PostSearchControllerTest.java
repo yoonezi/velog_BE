@@ -1,7 +1,6 @@
 package com.study.velog.api.controller.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.post.*;
 import com.study.velog.domain.tag.Tag;
@@ -19,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,17 +54,16 @@ class PostSearchControllerTest {
                                     .postStatus(PostStatus.SERVICED)
                                     .content("content")
                                     .title("title")
-                                    .postImageList(Lists.newArrayList(
+                                    .postImageList(Set.of(
                                             PostImage.builder().postImageId(1L).url("url1").imageOrder(1).build(),
                                             PostImage.builder().postImageId(2L).url("url2").imageOrder(2).build()))
                                     .categoryType(PostCategory.AI)
-                                    .postTags(Lists.newArrayList(PostTag.builder()
+                                    .postTags(Set.of(PostTag.builder()
                                             .postTagId(1L)
                                             .tag(Tag.builder().tagId(1L).tagContent("tag1").build())
                                             .build()))
                                     .build()
                         )
-
                 );
         // when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/post/search/1")
@@ -74,6 +73,8 @@ class PostSearchControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("content"))
                 .andExpect(jsonPath("$.title").value("title"))
-                .andExpect(jsonPath("$.categoryType").value("AI"));
+                .andExpect(jsonPath("$.categoryType").value("AI"))
+                .andExpect(jsonPath("$.tagList[0]").value("tag1"))
+        ;
     }
 }

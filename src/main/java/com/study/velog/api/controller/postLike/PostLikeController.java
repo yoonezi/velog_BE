@@ -5,11 +5,13 @@ import com.study.velog.api.service.postLike.PostLikeService;
 import com.study.velog.api.service.postLike.dto.request.CreatePostLikeServiceRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/postLike")
+@CrossOrigin("*")
 public class PostLikeController {
 
     private final PostLikeService postLikeService;

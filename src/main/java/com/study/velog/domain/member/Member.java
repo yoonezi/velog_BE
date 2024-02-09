@@ -1,10 +1,15 @@
 package com.study.velog.domain.member;
 
+import com.google.common.collect.Lists;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,17 +30,47 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
+    private String password;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "member_roles_mapping", joinColumns = @JoinColumn(name = "member_id"))
+    private List<MemberRole> memberRoles = new ArrayList<>();
+
+    public boolean matchPassword(String pw, PasswordEncoder passwordEncoder)
+    {
+        return passwordEncoder.matches(pw, this.password);
+    }
+
     @Builder
     public Member(
             Long memberId,
             String email,
             String nickname,
-            MemberStatus memberStatus
+            String password,
+            MemberStatus memberStatus,
+            List<MemberRole> memberRoles
     ) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
+        this.password = password;
         this.memberStatus = memberStatus;
+        this.memberRoles = memberRoles;
+    }
+
+    public static Member join(
+            String email,
+            String nickname,
+            String password,
+            PasswordEncoder passwordEncoder
+    ) {
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .memberStatus(MemberStatus.SERVICED)
+                .password(passwordEncoder.encode(password))
+                .memberRoles(Lists.newArrayList(MemberRole.ADMIN))
+                .build();
     }
 
     public static Member create(

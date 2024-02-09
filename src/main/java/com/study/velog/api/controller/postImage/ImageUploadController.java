@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/upload")
+@CrossOrigin("*")
 public class ImageUploadController {
 
     private final PostImageUploadService postImageUploadService;

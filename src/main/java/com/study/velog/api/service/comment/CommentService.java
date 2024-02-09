@@ -2,6 +2,7 @@ package com.study.velog.api.service.comment;
 
 import com.study.velog.api.service.comment.dto.request.CreateCommentServiceRequest;
 import com.study.velog.api.service.comment.dto.request.UpdateCommentServiceRequest;
+import com.study.velog.api.service.feed.PostFeedService;
 import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
@@ -24,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final PostFeedService postFeedService;
 
     public Long createComment(CreateCommentServiceRequest request)
     {
@@ -40,6 +42,9 @@ public class CommentService {
 
         Comment comment = Comment.create(request.content(), post, member);
         commentRepository.save(comment);
+
+        postFeedService.createAddCommentPostFeed(post.getPostId(), post.getMember().getMemberId());
+
         return comment.getCommentId();
     }
 
@@ -57,6 +62,7 @@ public class CommentService {
         }
 
         comment.update(request.content());
+
         return comment.getCommentId();
     }
 

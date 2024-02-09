@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comment/search")
+@CrossOrigin("*")
 public class CommentSearchController {
 
     private final CommentRepository commentRepository;

@@ -1,6 +1,7 @@
 package com.study.velog.api.controller.comment.dto.response;
 
 import com.study.velog.domain.comment.Comment;
+import com.study.velog.domain.comment.CommentStatus;
 import lombok.Builder;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public record SearchCommentResponses (
     public static SearchCommentResponses of(List<Comment> content, int page, int size)
     {
         List<SearchCommentResponse> commentResponses = content.stream()
+                .filter(comment -> comment.getCommentStatus() == CommentStatus.SERVICED)
                 .map(SearchCommentResponse::of)
                 .toList();
 

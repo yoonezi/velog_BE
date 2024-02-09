@@ -77,7 +77,7 @@ class MemberControllerTest {
                 .build();
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/member")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/1")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

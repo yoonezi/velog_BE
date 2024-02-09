@@ -11,6 +11,11 @@ public enum ErrorCode {
     MEMBER_EMAIL_DUPLICATE(HttpStatus.INTERNAL_SERVER_ERROR, "이메일이 중복되었습니다."),
     MEMBER_STATUS_DELETED(HttpStatus.INTERNAL_SERVER_ERROR, "멈버가 삭제된 상태입니다."),
 
+    //Follow
+    SELF_FOLLOW(HttpStatus.INTERNAL_SERVER_ERROR, "이메일이 중복되었습니다."),
+    ALREADY_FOLLOW(HttpStatus.INTERNAL_SERVER_ERROR, "이미 팔로우 하고 있는 유저"),
+    NOT_FOUND_FOLLOW(HttpStatus.NOT_FOUND, "팔로우 유저 아님"),
+
 
     //Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "포스트가 없습니다."),

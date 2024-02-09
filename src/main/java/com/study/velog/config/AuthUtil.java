@@ -1,19 +1,18 @@
 package com.study.velog.config;
 
-public class AuthUtil {
+import com.study.velog.domain.member.MemberDTO;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+public class AuthUtil {
     public static String currentUserEmail()
     {
-        return DataInit.MASTER_EMAIL;
-    }
-
-    public static String currentNickName()
-    {
-        return DataInit.MASTER;
+        MemberDTO dto = (MemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return dto.getEmail();
     }
 
     public static Long currentUserId()
     {
-        return DataInit.MASTER_ID;
+        MemberDTO dto = (MemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return Long.valueOf(dto.getMemberId());
     }
 }
