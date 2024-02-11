@@ -1,5 +1,6 @@
 package com.study.velog.api.controller.feed.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.velog.api.service.feed.FeedTaskType;
 import com.study.velog.api.service.feed.FollowFeed;
 import com.study.velog.api.service.feed.PostFeed;
@@ -28,13 +29,13 @@ public record UserFeedResponse(
                     {
                         return new UserFeed(
                                 FeedTaskType.POST_LIKE.toString(),
-                                String.format("%s 님이 회원님의 게시글을 좋아요 누름", memberMap.get(s.memberId()).getNickname()),
+                                String.format("%s 님이 회원님의 게시글을 좋아요를 눌렀습니다.", memberMap.get(s.memberId()).getNickname()),
                                 s.localDateTime()
                         );
                     }
                     else if (s.task().equals(FeedTaskType.ADD_COMMENT)) {
                         return new UserFeed(FeedTaskType.ADD_COMMENT.toString(),
-                                String.format("%s 님이 회원님의 게시글의 댓글 추가함", memberMap.get(s.memberId()).getNickname()),
+                                String.format("%s 님이 회원님의 게시글의 댓글을 추가하였습니다.", memberMap.get(s.memberId()).getNickname()),
                                 s.localDateTime()
                         );
                     }
@@ -65,6 +66,7 @@ public record UserFeedResponse(
     public record UserFeed(
             String feedTaskType,
             String message,
+            @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
             LocalDateTime regDate
     ) {}
 }

@@ -17,4 +17,5 @@ public enum PostCategory {
     {
         this.content = content;
     }
+
 }

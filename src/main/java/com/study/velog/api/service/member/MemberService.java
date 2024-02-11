@@ -72,6 +72,6 @@ public class MemberService {
 
         MemberDTO dto = MemberDTO.toDTO(member);
         String accessToken = tokenProvider.generateAccessToken(dto);
-        return new AuthLoginSuccessResponse(accessToken, member.getEmail());
+        return new AuthLoginSuccessResponse(accessToken, member.getEmail(), member.getNickname(), member.getMemberId());
     }
 }

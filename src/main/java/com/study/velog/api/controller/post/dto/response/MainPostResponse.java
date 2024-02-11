@@ -38,7 +38,6 @@ public record MainPostResponse(
                 .postResponses(postResponses)
                 .build();
     }
-
     private record PostResponse(
             Long postId,
             String mainImageUrl,
@@ -48,6 +47,5 @@ public record MainPostResponse(
             LocalDateTime registerDate,
             String content,
             int viewCount
-    ) {
-    }
+    ) {}
 }

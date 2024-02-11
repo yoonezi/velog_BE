@@ -115,4 +115,10 @@ class PostRepositoryTest {
       Page<MainPostLikeCountOrder> r = postRepository.readAllBy(PageRequest.of(0, 10, Sort.by("vct").descending()));
       System.out.println(r.getContent());
   }
+  
+  @Test
+  void ddd()
+  {
+      Page<Post> posts = postRepository.findAllPosts(PageRequest.of(0, 2, Sort.by("registerDate")), null);
+  }
 }

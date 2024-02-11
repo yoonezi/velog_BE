@@ -26,7 +26,7 @@ public class FollowFeedService {
     {
         followFeedTemplate.opsForList()
                 .leftPush(RedisKeyManager.generateFollowFeedKey(memberId),
-                        FollowFeed.of(AuthUtil.currentUserEmail() ,FeedTaskType.ADD_FOLLOW));
+                        FollowFeed.of(AuthUtil.currentUserEmail(), memberId, FeedTaskType.ADD_FOLLOW));
     }
 
     public List<FollowFeed> findMemberFollowFeeds(Long memberId)

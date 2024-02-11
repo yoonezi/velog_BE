@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,4 +59,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "left join fetch p.member m " +
             "where p.postId in :postIds")
     Page<Post> findAllPostIds(@Param("postIds") List<Long> postIds, Pageable pageable);
+
+    @Query("select p from Post p join fetch p.member where p.postStatus = 'SERVICED' and (:category is null or p.categoryType = :category)")
+    Page<Post> findAllPosts(Pageable pageable, @Param("category") PostCategory category);
 }

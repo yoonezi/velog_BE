@@ -35,7 +35,7 @@ public class PostLikeService {
 
         PostLike postLike = PostLike.create(post, member);
 
-        postFeedService.createPostLikePostFeed(post.getPostId(), post.getMember().getMemberId());
+        postFeedService.createPostLikePostFeed(post.getPostId(), post.getMember().getMemberId(), member.getMemberId());
 
         return postLikeRepository.save(postLike).getPostLikeId();
     }

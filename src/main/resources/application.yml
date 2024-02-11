@@ -11,10 +11,11 @@ spring:
     hibernate:
       ddl-auto: create
     properties:
-      hibernate.default_batch_fetch_size: 100
       hibernate:
         show_sql: true
         format_sql: true
+        highlight_sql: true
+        default_batch_fetch_size: 10
   data:
     redis:
       host: localhost
@@ -25,6 +26,6 @@ post:
       path: /Users/yoonezi/Desktop/images/
 jwt:
   secret-key: wepqieqiopeiwqpepowqiopwqiopeiowqpieopqwopieqweoipuqweiopepqioepqiopeiqopwwpqoi
-#logging.level:
-#  org.hibernate.SQL: debug
-#  org.hibernate.type: trace
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace

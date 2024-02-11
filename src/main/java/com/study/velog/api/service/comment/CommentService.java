@@ -43,7 +43,11 @@ public class CommentService {
         Comment comment = Comment.create(request.content(), post, member);
         commentRepository.save(comment);
 
-        postFeedService.createAddCommentPostFeed(post.getPostId(), post.getMember().getMemberId());
+        postFeedService.createAddCommentPostFeed(
+                post.getPostId(),
+                post.getMember().getMemberId(),
+                member.getMemberId()
+        );
 
         return comment.getCommentId();
     }
@@ -78,7 +82,6 @@ public class CommentService {
         {
             throw new ApiException(ErrorCode.INVALID_ACCESS_COMMENT);
         }
-
         comment.delete();
     }
 }

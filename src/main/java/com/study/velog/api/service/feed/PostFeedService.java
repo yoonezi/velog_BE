@@ -23,18 +23,11 @@ public class PostFeedService {
         this.postFeedTemplate = postFeedTemplate;
     }
 
-    public void createAddCommentPostFeed(long postId, long memberId)
+    public void createAddCommentPostFeed(Long postId, Long feedMemberId, Long memberId)
     {
         postFeedTemplate.opsForList()
-                .leftPush(RedisKeyManager.generatePostFeedKey(memberId),
-                        PostFeed.of(postId, AuthUtil.currentUserEmail() ,FeedTaskType.ADD_COMMENT));
-    }
-
-    public void createPostLikePostFeed(long postId, long memberId)
-    {
-        postFeedTemplate.opsForList()
-                .leftPush(RedisKeyManager.generatePostFeedKey(memberId),
-                        PostFeed.of(postId, AuthUtil.currentUserEmail(), FeedTaskType.POST_LIKE));
+                .leftPush(RedisKeyManager.generatePostFeedKey(feedMemberId),
+                        PostFeed.of(postId, AuthUtil.currentUserEmail(), memberId ,FeedTaskType.ADD_COMMENT));
     }
 
     public List<PostFeed> findMemberPostFeeds(Long memberId)
@@ -43,4 +36,9 @@ public class PostFeedService {
                 .range(RedisKeyManager.generatePostFeedKey(memberId), 0, FEED_SIZE);
     }
 
+    public void createPostLikePostFeed(Long postId, Long feedMemberId, Long memberId) {
+        postFeedTemplate.opsForList()
+                .leftPush(RedisKeyManager.generatePostFeedKey(feedMemberId),
+                        PostFeed.of(postId, AuthUtil.currentUserEmail(), memberId, FeedTaskType.POST_LIKE));
+    }
 }

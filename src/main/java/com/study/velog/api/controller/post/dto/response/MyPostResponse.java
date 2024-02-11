@@ -42,6 +42,11 @@ public record MyPostResponse(
                 .build();
     }
 
+    public static MyPostResponse of2(Page<PostResponses> response)
+    {
+        return null;
+    }
+
     private record PostResponse(
             Long postId,
             String mainImageUrl,

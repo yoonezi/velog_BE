@@ -1,6 +1,7 @@
 package com.study.velog.api.controller.member;
 
 import com.study.velog.api.controller.member.dto.response.MemberResponse;
+import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
@@ -22,6 +23,7 @@ public class MemberSearchController {
     @GetMapping("/{memberId}")
     public MemberResponse searchMember(@PathVariable Long memberId)
     {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -33,10 +35,10 @@ public class MemberSearchController {
         return MemberResponse.of(member);
     }
 
-    @GetMapping("/email/{memberEmail}")
-    public MemberResponse searchMemberByEmail(@PathVariable String memberEmail)
+    @GetMapping("/email")
+    public MemberResponse searchMemberByEmail()
     {
-        Member member = memberRepository.findByEmail(memberEmail)
+        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (member.getMemberStatus() == MemberStatus.DELETED)
