@@ -1,6 +1,5 @@
 package com.study.velog.api.service.post;
 
-import com.study.velog.api.service.feed.FollowFeedService;
 import com.study.velog.api.service.post.dto.PostCreatedEvent;
 import com.study.velog.api.service.post.dto.request.CreatePostServiceRequest;
 import com.study.velog.api.service.post.dto.request.UpdatePostServiceRequest;
@@ -16,6 +15,7 @@ import com.study.velog.domain.post.PostRepository;
 import com.study.velog.domain.post.PostTag;
 import com.study.velog.domain.tag.Tag;
 import com.study.velog.domain.tag.TagRepository;
+import com.study.velog.repository.PostQuerydslRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -34,8 +34,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
-    private final FollowFeedService followFeedService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    //TODO 확인
+    private final PostQuerydslRepository postQuerydslRepository;
 
     public Long createPost(CreatePostServiceRequest request)
     {
@@ -95,7 +96,9 @@ public class PostService {
         Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Post post = postRepository.findPostWithFetch(request.postId())
+//        Post post = postRepository.findPostWithFetch(request.postId())
+//                .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
+        Post post = postQuerydslRepository.findPostWithFetch(request.postId())
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getMemberId().equals(member.getMemberId()))

@@ -5,18 +5,14 @@ import com.study.velog.api.controller.post.dto.request.PostSortType;
 import com.study.velog.api.controller.post.dto.response.MainPostsResponse;
 import com.study.velog.api.controller.post.dto.response.MyPostResponse;
 import com.study.velog.api.controller.post.dto.response.PostResponse;
-import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostRepository;
-import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.type.PostCategory;
 import com.study.velog.repository.PostQuerydslRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,37 +30,34 @@ public class PostSearchController {
     private final PostQuerydslRepository postQuerydslRepository;
 
     @GetMapping("/{postId}")
-    public PostResponse findPost(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response)
+    public PostResponse findPost(@PathVariable Long postId)
     {
-        Post post = postRepository.findPostWithFetch(postId)
+        Post post = postQuerydslRepository.findPostWithFetch(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
-        if (!PostStatus.SERVICED.equals(post.getPostStatus()))
-        {
-            throw new ApiException(ErrorCode.INVALID_ACCESS_POST);
-        }
-
         postRepository.increaseViewCount(postId);
+
         return PostResponse.of(post);
     }
 
-    @GetMapping("/my-posts")
+    @GetMapping("/member/{memberId}")
     public MyPostResponse findMyPost(
             @RequestParam("page") int page,
-            @RequestParam("size") int size
+            @RequestParam("size") int size,
+            @PathVariable("memberId") Long memberId,
+            @RequestParam(value = "postSortType", defaultValue = "LATEST", required = false) PostSortType postSortType
     ) {
-        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
+
         PageRequest pageable = PageRequest.of(page, size);
         PostSearchCondition condition = new PostSearchCondition(
                 null,
                 pageable,
-                null,
+                postSortType,
                 member.getMemberId()
         );
         return postQuerydslRepository.findMyPosts(condition);
-//        Page<Post> posts = postRepository.findMyPosts(member.getEmail(), PageRequest.of(page, size));
-//        return MyPostResponse.of(page, posts.getTotalElements(), posts);
     }
 
     @GetMapping("/main")
@@ -83,46 +76,4 @@ public class PostSearchController {
         );
         return postQuerydslRepository.findPosts(condition);
     }
-
-//    @GetMapping("/main2")
-//    public MainPostsResponse findMainPosts2(
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size,
-//            @RequestParam(value = "postSortType", defaultValue = "LATEST") PostSortType postSortType,
-//            @RequestParam(value = "category", required = false) PostCategory postCategory
-//    ) {
-//        PageRequest pageable = PageRequest.of(page, size);
-//        PostSearchCondition condition = new PostSearchCondition(
-//                postCategory,
-//                pageable,
-//                postSortType
-//        );
-//        return postQuerydslRepository.findPosts2(condition);
-//    }
-
-//    @GetMapping("/main2")
-//    public MainPostsResponse findPosts(
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size,
-//            @RequestParam(value = "sort", defaultValue = "LATEST") MainSort mainSort
-//    ) {
-//        return postQuerydslRepository.findPosts(PageRequest.of(page, size, mainSort.getSort()));
-//    }
-//
-//    @GetMapping("/like")
-//    public MainPostResponse findLatestPosts(
-//            @RequestParam("page") int page,
-//            @RequestParam("size") int size
-//    ) {
-//        Page<Post> posts = postRepository.findLikePosts(PageRequest.of(page, size));
-//        return MainPostResponse.of(page, posts);
-//    }
-
-//    @GetMapping("/category/{category}")
-//    public PostByCategoryResponse findPostByCategory(@PathVariable String category)
-//    {
-//        List<Post> posts = postRepository.findAll();
-//        Map<PostCategory, List<Post>> postsByCategory = Map.of(PostCategory.valueOf(category), posts);
-//        return PostByCategoryResponse.of(postsByCategory);
-//    }
 }

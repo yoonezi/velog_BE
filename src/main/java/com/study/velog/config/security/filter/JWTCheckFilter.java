@@ -43,7 +43,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 "/static",
                 "/api/post/search",
                 "/post/image/",
-                "/api/post/search/",
+//                "/api/post/search/",
                 "/api/comment/search/",
 
         };
@@ -66,8 +66,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             Map<String, Object> claims = tokenProvider.validateToken(accessToken);
             String email = (String) claims.get("email");
             String password = (String) claims.get("password");
-            System.out.println("password : " + password);
-            System.out.println("email : " + email);
+
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             if (userDetails != null)
             {
@@ -84,7 +83,6 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         }
         catch (Exception e)
         {
-            System.out.println("ERROR :" + e.getMessage());
             log.error("JWT Check Error..............");
             Gson gson = new Gson();
             String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
@@ -93,7 +91,6 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             PrintWriter printWriter = response.getWriter();
             printWriter.println(msg);
             printWriter.close();
-
         }
     }
 }

@@ -1,10 +1,10 @@
 package com.study.velog.api.controller.post.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"imageUrl", "imageOrder"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostImageResponse {

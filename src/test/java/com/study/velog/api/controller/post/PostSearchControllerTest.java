@@ -1,10 +1,13 @@
 package com.study.velog.api.controller.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.velog.config.security.filter.JWTCheckFilter;
 import com.study.velog.domain.member.Member;
+import com.study.velog.domain.member.MemberRepository;
 import com.study.velog.domain.post.*;
 import com.study.velog.domain.tag.Tag;
 import com.study.velog.domain.type.PostCategory;
+import com.study.velog.repository.PostQuerydslRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -13,23 +16,37 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 import java.util.Set;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = PostSearchController.class)
+@WebMvcTest(controllers = PostSearchController.class,
+excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
+})
+@WithMockUser
 class PostSearchControllerTest {
 
     @MockBean
     PostRepository postRepository;
+
+    @MockBean
+    MemberRepository memberRepository;
+
+    @MockBean
+    PostQuerydslRepository postQuerydslRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -41,7 +58,7 @@ class PostSearchControllerTest {
     void searchPost() throws Exception
     {
         // given
-        BDDMockito.given(postRepository.findPostWithFetch(Mockito.any()))
+        BDDMockito.given(postQuerydslRepository.findPostWithFetch(Mockito.any()))
                 .willReturn(
                         Optional.of(
                             Post.builder()
@@ -67,6 +84,7 @@ class PostSearchControllerTest {
                 );
         // when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/post/search/1")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 // then
@@ -77,4 +95,51 @@ class PostSearchControllerTest {
                 .andExpect(jsonPath("$.tagList[0]").value("tag1"))
         ;
     }
+
+//    void searchMyPost() throws Exception {
+//        // given
+//        BDDMockito.given(postQuerydslRepository.findMyPosts(Mockito.any())).willReturn(createMockMyPostResponse());
+//
+//        // when/then
+//        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{memberId}", 1L)
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                        .param("page", "0")
+//                        .param("size", "10")
+//                        .param("postSortType", PostSortType.LATEST.toString()))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.page").value(0))
+//                .andExpect(jsonPath("$.size").value(0))
+//                .andExpect(jsonPath("$.totalElementCount").value(1))
+//                .andExpect(jsonPath("$.postResponses[0].postId").value(1))
+//                .andExpect(jsonPath("$.postResponses[0].mainImageUrl").value("url1"))
+//                .andExpect(jsonPath("$.postResponses[0].title").value("title"))
+//                .andExpect(jsonPath("$.postResponses[0].memberName").value("nickname"))
+//                .andExpect(jsonPath("$.postResponses[0].content").value("content"))
+//                .andExpect(jsonPath("$.postResponses[0].viewCount").value(0));
+//    }
+//
+//    private MyPostResponse createMockMyPostResponse() {
+//
+//        PostResponse postResponse = PostResponse.builder()
+//                .mainImageUrl("url")
+//                .content("c")
+//                .title("t")
+//                .memberName("m")
+//                .build())
+//        return new MyPostResponse(0, 0, 1, List.of(postResponse));
+//    }
+//
+//    @Builder
+//    private record PostResponse(
+//            Long postId,
+//            String mainImageUrl,
+//            String title,
+//            String memberName,
+//            @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+//            LocalDateTime registerDate,
+//            String content,
+//            int viewCount
+//    ) {
+//    }
 }

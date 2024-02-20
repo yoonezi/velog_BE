@@ -1,5 +1,6 @@
 package com.study.velog.api.service.member;
 
+import com.study.velog.IntegrationTestSupport;
 import com.study.velog.api.service.member.dto.request.CreateMemberServiceRequest;
 import com.study.velog.api.service.member.dto.request.UpdateMemberServiceRequest;
 import com.study.velog.config.AuthUtil;
@@ -9,17 +10,13 @@ import com.study.velog.domain.member.MemberStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("멤버 서비스 테스트")
-@SpringBootTest
 @Transactional
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTestSupport  {
 
     @Autowired
     MemberService memberService;
@@ -35,15 +32,15 @@ class MemberServiceTest {
         CreateMemberServiceRequest request = CreateMemberServiceRequest.builder()
                 .email("memberA@gmail.com")
                 .nickname("memberA")
+                .password("aaaa")
+                .confirmPassword("aaaa")
                 .build();
 
         //when
         Long memberId = memberService.join(request);
-        List<Member> members = memberRepository.findAll();
-        Member member = members.get(1);
+        Member member = memberRepository.findByEmail("memberA@gmail.com").orElseThrow();
 
         //then
-        assertThat(members).hasSize(2);
         assertThat(memberId).isEqualTo(member.getMemberId());
         assertThat(member).extracting(Member::getNickname, Member::getEmail)
                 .contains("memberA", "memberA@gmail.com");

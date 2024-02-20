@@ -103,8 +103,6 @@ class PostServiceTest {
         List<Post> posts = postRepository.findAll();
         Post findPost = posts.get(0);
 
-        System.out.println(findPost);
-
         // then
         assertThat(findPost).extracting(Post::getTitle, Post::getContent)
                         .contains(request.title(), "content");

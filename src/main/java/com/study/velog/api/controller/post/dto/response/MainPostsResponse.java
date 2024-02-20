@@ -5,7 +5,6 @@ import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.type.PostCategory;
 import lombok.Builder;
-import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,8 @@ public record MainPostsResponse(
                 .filter(post -> post.getPostStatus() == PostStatus.SERVICED)
                 .map(post -> new PostResponse(
                         post.getPostId(),
-                        CollectionUtils.isEmpty(post.getPostImageList()) ? "" : post.getPostImageList().stream().findAny().get().getUrl(),
+                        CollectionUtils.isEmpty(post.getPostImageList()) ? ""
+                                : post.getPostImageList().stream().findAny().get().getUrl(),
                         post.getMember().getMemberId(),
                         post.getMember().getNickname(),
                         post.getTitle(),
@@ -42,30 +42,6 @@ public record MainPostsResponse(
         return MainPostsResponse.builder()
                 .page(0)
                 .size(0)
-                .postResponses(postResponses)
-                .build();
-    }
-
-    public static MainPostsResponse of2(Page<PostResponses> response)
-    {
-        List<PostResponse> postResponses = response.getContent().stream()
-                .map(post -> new PostResponse(
-                        post.getPostId(),
-                        CollectionUtils.isEmpty(post.getPostImageResponses()) ? "" : post.getPostImageResponses().stream().findAny().get().getImageUrl(),
-                        post.getMemberId(),
-                        post.getMemberName(),
-                        post.getTitle(),
-                        post.getRegisterDate(),
-                        post.getContent(),
-                        post.getViewCount(),
-                        post.getPostCategory(),
-                        null
-                ))
-                .collect(Collectors.toList());
-
-        return MainPostsResponse.builder()
-                .page(response.getPageable().getPageNumber())
-                .size(response.getPageable().getPageSize())
                 .postResponses(postResponses)
                 .build();
     }

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ToString
-public class MemberDTO extends User{
+public class MemberDTO extends User {
 
     @Getter
     private String email;

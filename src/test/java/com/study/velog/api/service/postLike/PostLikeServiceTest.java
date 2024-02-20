@@ -1,5 +1,6 @@
 package com.study.velog.api.service.postLike;
 
+import com.study.velog.IntegrationTestSupport;
 import com.study.velog.api.service.postLike.dto.request.CreatePostLikeServiceRequest;
 import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("포스트 좋아요 서비스 테스트")
 @SpringBootTest
 @Transactional
-class PostLikeServiceTest {
+class PostLikeServiceTest extends IntegrationTestSupport {
 
     @Autowired
     PostLikeService postLikeService;

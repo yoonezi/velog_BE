@@ -1,14 +1,16 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/velog?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 991006
+    url:  jdbc:h2:mem:~/velog
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
   jpa:
     hibernate:
       ddl-auto: create
     properties:
-      defer-datasource-initialization: true
       hibernate:
         show_sql: true
         format_sql: true
@@ -18,8 +20,6 @@ spring:
     redis:
       host: localhost
       port: 6379
-  profiles:
-    default: local
 post:
   image:
     upload:

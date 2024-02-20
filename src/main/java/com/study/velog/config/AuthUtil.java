@@ -4,6 +4,7 @@ import com.study.velog.domain.member.MemberDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthUtil {
+
     public static String currentUserEmail()
     {
         MemberDTO dto = (MemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -23,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+//import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
 @Slf4j
@@ -39,16 +39,17 @@ public class CustomSecurityConfig {
     {
         return new BCryptPasswordEncoder();
     }
-        @Bean
+
+    @Bean
     public WebSecurityCustomizer configure(){
         return (web) -> web.ignoring()
-                .requestMatchers(toH2Console())
+//                .requestMatchers(toH2Console())
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/static/**"))
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/**"))
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login"))
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/signup"))
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
-//                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/follow/**"))
+
                 ;
     }
     @Bean

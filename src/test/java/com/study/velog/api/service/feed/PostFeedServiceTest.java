@@ -18,6 +18,5 @@ class PostFeedServiceTest {
     {
 //        postFeedTemplate.opsForList().leftPush("postfeed:1", new PostFeed(1L, "ddddd@mccm.com", FeedTaskType.POST_LIKE, LocalDateTime.now()));
         List<PostFeed> range = postFeedTemplate.opsForList().range("postfeed:1", 0, 0);
-        System.out.println(range);
     }
 }

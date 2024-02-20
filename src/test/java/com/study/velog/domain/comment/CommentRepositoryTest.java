@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+
 @DataJpaTest
 class CommentRepositoryTest {
     @Autowired
@@ -33,7 +34,7 @@ class CommentRepositoryTest {
     EntityManager entityManager;
 
     @Test
-    void dddd()
+    void create()
     {
         // given
         Member member = memberRepository.save(Member.builder().email("email@gmail.com").nickname("nickname").build());

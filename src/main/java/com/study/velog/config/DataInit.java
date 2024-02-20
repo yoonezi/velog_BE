@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class DataInit {
     private final TagRepository tagRepository;
     private final PostLikeRepository postLikeRepository;
     private final RedisTemplate<String, String> redisTemplate;
-
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init()
@@ -54,6 +55,7 @@ public class DataInit {
                         .nickname(MASTER)
                         .email(MASTER_EMAIL)
                         .memberId(MASTER_ID)
+                        .password(passwordEncoder.encode("password"))
                         .build()
         );
 
@@ -63,6 +65,7 @@ public class DataInit {
                         .nickname(MASTER)
                         .email(MASTER_EMAIL + "DDDDD")
                         .memberId(2L)
+                        .password(passwordEncoder.encode("password"))
                         .build()
         );
 
@@ -72,6 +75,7 @@ public class DataInit {
                         .nickname(MASTER)
                         .email(MASTER_EMAIL + "DDsssDDD")
                         .memberId(3L)
+                        .password(passwordEncoder.encode("password"))
                         .build()
         );
 

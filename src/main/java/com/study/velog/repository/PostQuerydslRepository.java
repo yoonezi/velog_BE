@@ -1,5 +1,6 @@
 package com.study.velog.repository;
 
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -12,10 +13,8 @@ import com.study.velog.api.controller.post.dto.response.MyPostResponse;
 import com.study.velog.api.controller.post.dto.response.PostImageResponse;
 import com.study.velog.api.controller.post.dto.response.PostResponses;
 import com.study.velog.domain.member.QMember;
-import com.study.velog.domain.post.Post;
-import com.study.velog.domain.post.PostStatus;
-import com.study.velog.domain.post.QPost;
-import com.study.velog.domain.post.QPostImage;
+import com.study.velog.domain.post.*;
+import com.study.velog.domain.tag.QTag;
 import com.study.velog.domain.type.PostCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,13 +22,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 
 @Component
 @RequiredArgsConstructor
 public class PostQuerydslRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     public Page<PostResponses> findAllPosts(PostSearchCondition condition)
@@ -79,13 +79,13 @@ public class PostQuerydslRepository {
                                                 post.registerDate,
                                                 post.member.memberId,
                                                 post.member.nickname,
-                                                list(
+                                                post.postStatus,
+                                                GroupBy.set(
                                                         Projections.constructor(
                                                                 PostImageResponse.class,
                                                                 postImage.url,
                                                                 postImage.imageOrder
                                                         )
-
                                                 )
                                         )
                                 ));
@@ -118,16 +118,10 @@ public class PostQuerydslRepository {
         return MainPostsResponse.of(posts);
     }
 
-    public MainPostsResponse tempFindPosts(PostSearchCondition condition)
-    {
-        Page<PostResponses> response = findAllPosts(condition);
-        return MainPostsResponse.of2(response);
-    }
-
     public MyPostResponse findMyPosts(PostSearchCondition condition)
     {
         Page<PostResponses> response = findAllPosts(condition);
-        return MyPostResponse.of2(response);
+        return MyPostResponse.of(response);
     }
 
     private BooleanExpression categoryEq(PostCategory postCategory)
@@ -147,5 +141,24 @@ public class PostQuerydslRepository {
             case VIEWS -> new OrderSpecifier<>(Order.DESC, QPost.post.viewCount);
             default -> new OrderSpecifier<>(Order.DESC, QPost.post.postId);
         };
+    }
+
+    public Optional<Post> findPostWithFetch(Long postId)
+    {
+        QPost post = QPost.post;
+        QMember member = QMember.member;
+        QPostTag postTags = QPostTag.postTag;
+        QTag tag = QTag.tag;
+        QPostImage postImage = QPostImage.postImage;
+
+        Post result = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.member, member).fetchJoin()
+                .leftJoin(post.postTags, postTags).fetchJoin()
+                .leftJoin(post.postImageList, postImage).fetchJoin()
+                .leftJoin(postTags.tag, tag).fetchJoin()
+                .where(post.postId.eq(postId).and(post.postStatus.eq(PostStatus.SERVICED)))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }

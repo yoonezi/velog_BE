@@ -1,5 +1,6 @@
 package com.study.velog.api.service.comment;
 
+import com.study.velog.IntegrationTestSupport;
 import com.study.velog.api.service.comment.dto.request.CreateCommentServiceRequest;
 import com.study.velog.api.service.comment.dto.request.UpdateCommentServiceRequest;
 import com.study.velog.config.AuthUtil;
@@ -17,7 +18,6 @@ import com.study.velog.domain.type.PostCategory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -26,9 +26,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("댓글 서비스 테스트")
-@SpringBootTest
 @Transactional
-class CommentServiceTest {
+class CommentServiceTest extends IntegrationTestSupport {
 
     @Autowired
     CommentService commentService;
@@ -83,7 +82,6 @@ class CommentServiceTest {
         // given
         Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
-
 
         Post post = postRepository.save(Post.builder()
                 .title("title")

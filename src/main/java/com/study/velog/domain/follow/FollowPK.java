@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FollowPK implements Serializable {
-    private String followerId;
+    private Long followerId;
     private Long followeeId;
 }

@@ -1,12 +1,13 @@
 package com.study.velog.api.controller.post.dto.response;
 
+import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.type.PostCategory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -20,5 +21,6 @@ public class PostResponses {
     private LocalDateTime registerDate;
     private Long memberId;
     private String memberName;
-    private List<PostImageResponse> postImageResponses;
+    private PostStatus postStatus;
+    private Set<PostImageResponse> postImageResponses;
 }

@@ -2,6 +2,7 @@ package com.study.velog.api.controller.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.study.velog.config.security.filter.JWTCheckFilter;
 import com.study.velog.domain.comment.Comment;
 import com.study.velog.domain.comment.CommentRepository;
 import com.study.velog.domain.comment.CommentStatus;
@@ -20,9 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -33,7 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = CommentSearchController.class)
+@WebMvcTest(controllers = CommentSearchController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
+        })
+@WithMockUser
 public class CommentSearchControllerTest {
 
     @MockBean
@@ -44,7 +52,6 @@ public class CommentSearchControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
 
     @Test
     void findComments() throws Exception
@@ -102,7 +109,6 @@ public class CommentSearchControllerTest {
                 .andExpect(jsonPath("$.page").value(page))
                 .andExpect(jsonPath("$.size").value(size))
                 .andExpect(jsonPath("$.searchCommentResponses").isArray())
-
         ;
     }
 }
