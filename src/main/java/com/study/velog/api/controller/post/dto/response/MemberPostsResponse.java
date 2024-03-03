@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 
 @Builder
-public record MyPostResponse(
+public record MemberPostsResponse(
         int page,
         int size,
         long totalElementCount,
@@ -41,7 +41,7 @@ public record MyPostResponse(
 //                .build();
 //    }
 
-    public static MyPostResponse of(Page<PostResponses> response)
+    public static MemberPostsResponse of(Page<PostResponses> response)
     {
         List<PostResponse> myPostResponses = response.stream()
                 .filter(res -> res.getPostStatus() == PostStatus.SERVICED)
@@ -53,11 +53,12 @@ public record MyPostResponse(
                         res.getMemberName(),
                         res.getRegisterDate(),
                         res.getContent(),
-                        res.getViewCount()
+                        res.getViewCount(),
+                        res.getPostStatus()
                 ))
                 .collect(Collectors.toList());
 
-        return MyPostResponse.builder()
+        return MemberPostsResponse.builder()
                 .page(0)
                 .size(0)
                 .totalElementCount(response.getTotalElements())
@@ -73,7 +74,11 @@ public record MyPostResponse(
             @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
             LocalDateTime registerDate,
             String content,
-            int viewCount
-    ) {
-    }
+            int viewCount,
+            PostStatus postStatus
+    ) {}
+//    public static PostResponse of(Long postId, String mainImageUrl, String title, String memberName, LocalDateTime registerDate, String content, int viewCount) {
+//        return new PostResponse(postId, mainImageUrl, title, memberName, registerDate, content, viewCount);
+//    }
 }
+

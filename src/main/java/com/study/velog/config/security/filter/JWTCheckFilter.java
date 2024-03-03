@@ -43,9 +43,10 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 "/static",
                 "/api/post/search",
                 "/post/image/",
-//                "/api/post/search/",
                 "/api/comment/search/",
-
+                "/api/member/search/",
+                "/api/follow/search/",
+                "/api/upload/"
         };
 
         String path = request.getRequestURI();

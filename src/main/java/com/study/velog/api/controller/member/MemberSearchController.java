@@ -23,7 +23,6 @@ public class MemberSearchController {
     @GetMapping("/{memberId}")
     public MemberResponse searchMember(@PathVariable Long memberId)
     {
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 

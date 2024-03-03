@@ -112,55 +112,56 @@ public class DataInit {
 
         Set<PostImage> postImages1 = new HashSet<>(Arrays.asList(
                 PostImage.builder()
-                        .url("fd248e87-098b-4813-86fa-3763a0dd37a6_img6.jpg")
+                        .url("eb5cf268-e846-4e4f-b9be-585f6f4736ed-img6.jpeg")
                         .imageOrder(0)
                         .build(),
                 PostImage.builder()
-                        .url("a20460da-7b95-4d6b-8f71-5c8f2b03cf63_img4.jpg")
+                        .url("eb5cf268-e846-4e4f-b9be-585f6f4736ed-img6.jpeg")
                         .imageOrder(1)
                         .build()
         ));
 
         Set<PostImage> postImages2 = new HashSet<>(Arrays.asList(
                 PostImage.builder()
-                        .url("fd248e87-098b-4813-86fa-3763a0dd37a6_img6.jpg")
+                        .url("ed59ab02-15fc-4ee4-8257-844cb91efbf5-img2.png")
                         .imageOrder(0)
                         .build(),
                 PostImage.builder()
-                        .url("1526021f-f668-49e3-9210-6f54f86d2849_img5.jpg")
+                        .url("ed59ab02-15fc-4ee4-8257-844cb91efbf5-img2.png")
                         .imageOrder(1)
                         .build()
         ));
 
         Set<PostImage> postImages3 = new HashSet<>(Arrays.asList(
                 PostImage.builder()
-                        .url("118d6564-ec57-43a8-8ebb-27b826e68dd8_img2.jpg")
+                        .url("c68baa26-da4f-4651-9974-07e041e35e8d-img8.png")
                         .imageOrder(0)
                         .build(),
                 PostImage.builder()
-                        .url("a20460da-7b95-4d6b-8f71-5c8f2b03cf63_img4.jpg")
+                        .url("c68baa26-da4f-4651-9974-07e041e35e8d-img8.png")
                         .imageOrder(1)
                         .build()
         ));
 
         Set<PostImage> postImages4 = new HashSet<>(Arrays.asList(
                 PostImage.builder()
-                        .url("e64233dd-1622-401a-87b5-d86e97df9ed0_img3.jpg")
+                        .url("db501527-c9d2-4fd9-9de7-712d42f7b266-img7.png")
                         .imageOrder(0)
                         .build(),
                 PostImage.builder()
-                        .url("a20460da-7b95-4d6b-8f71-5c8f2b03cf63_img4.jpg")
+                        .url("db501527-c9d2-4fd9-9de7-712d42f7b266-img7.png")
+
                         .imageOrder(1)
                         .build()
         ));
 
         Set<PostImage> postImages5 = new HashSet<>(Arrays.asList(
                 PostImage.builder()
-                        .url("548d9245-efb2-41cc-b0e1-562862d36206_img7.jpg")
+                        .url("d728f4da-414b-47b8-b948-25c98bd56de9-img3.jpeg")
                         .imageOrder(0)
                         .build(),
                 PostImage.builder()
-                        .url("a20460da-7b95-4d6b-8f71-5c8f2b03cf63_img4.jpg")
+                        .url("d728f4da-414b-47b8-b948-25c98bd56de9-img3.jpeg")
                         .imageOrder(1)
                         .build()
         ));

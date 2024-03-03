@@ -26,6 +26,16 @@ post:
       path: /Users/yoonezi/Desktop/images/
 jwt:
   secret-key: wepqieqiopeiwqpepowqiopwqiopeiowqpieopqwopieqweoipuqweiopepqioepqiopeiqopwwpqoi
-logging.level:
-  org.hibernate.SQL: debug
-  org.hibernate.type: trace
+#logging.level:
+#  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
+
+cloud:
+  aws:
+    s3:
+      bucket: velog-yz
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIAQSXPXWPN5SFCTQB3
+      secretKey: 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

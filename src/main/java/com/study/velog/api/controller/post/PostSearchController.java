@@ -3,7 +3,7 @@ package com.study.velog.api.controller.post;
 import com.study.velog.api.controller.post.dto.request.PostSearchCondition;
 import com.study.velog.api.controller.post.dto.request.PostSortType;
 import com.study.velog.api.controller.post.dto.response.MainPostsResponse;
-import com.study.velog.api.controller.post.dto.response.MyPostResponse;
+import com.study.velog.api.controller.post.dto.response.MemberPostsResponse;
 import com.study.velog.api.controller.post.dto.response.PostResponse;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
@@ -41,7 +41,7 @@ public class PostSearchController {
     }
 
     @GetMapping("/member/{memberId}")
-    public MyPostResponse findMyPost(
+    public MemberPostsResponse findMemberPost(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @PathVariable("memberId") Long memberId,

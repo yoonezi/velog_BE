@@ -40,10 +40,10 @@ excludeFilters = {
 class PostSearchControllerTest {
 
     @MockBean
-    PostRepository postRepository;
+    MemberRepository memberRepository;
 
     @MockBean
-    MemberRepository memberRepository;
+    PostRepository postRepository;
 
     @MockBean
     PostQuerydslRepository postQuerydslRepository;
@@ -96,50 +96,76 @@ class PostSearchControllerTest {
         ;
     }
 
-//    void searchMyPost() throws Exception {
+//    @Test
+//    void findMemberPost_Success() throws Exception {
 //        // given
-//        BDDMockito.given(postQuerydslRepository.findMyPosts(Mockito.any())).willReturn(createMockMyPostResponse());
+//        Long memberId = 1L;
+//        int page = 0;
+//        int size = 10;
 //
-//        // when/then
-//        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{memberId}", 1L)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                        .param("page", "0")
-//                        .param("size", "10")
-//                        .param("postSortType", PostSortType.LATEST.toString()))
+//        Member member = Member.builder()
+//                .memberId(memberId)
+//                .email("a@gmail.com")
+//                .nickname("nickname")
+//                .build();
+//
+//        BDDMockito.given(memberRepository.findById(memberId))
+//                .willReturn(Optional.of(member));
+//
+//        PageRequest pageable = PageRequest.of(page, size);
+//        List<Post> posts = new ArrayList<>();
+//        Post post = Post.builder()
+//                .postId(1L)
+//                .member(member)
+//                .postStatus(PostStatus.SERVICED)
+//                .content("content")
+//                .title("title")
+//                .postImageList(Set.of(
+//                        PostImage.builder().postImageId(1L).url("url1").imageOrder(1).build(),
+//                        PostImage.builder().postImageId(2L).url("url2").imageOrder(2).build()))
+//                .categoryType(PostCategory.AI)
+//                .postTags(Set.of(PostTag.builder().postTagId(1L).tag(Tag.builder().tagId(1L).tagContent("tag1").build()).build()))
+//                .build();
+//        posts.add(post);
+//        Page<Post> postPage = new PageImpl<>(posts, pageable, posts.size());
+//        BDDMockito.given(postQuerydslRepository.findMyPosts(Mockito.any()))
+//                .willReturn(MemberPostsResponse.builder()
+//                        .page(0)
+//                        .size(4)
+//                        .totalElementCount(1)
+//                        .postResponses(
+//                                Lists.newArrayList(
+//                                        PostResponse.of(
+//                                                1L,
+//                                                "url1",
+//                                                "title",
+//                                                "nickname",
+//                                                LocalDateTime.now(),
+//                                                "content",
+//                                                0
+//                                        )
+//                                )
+//                        )
+//                )
+//                .build(););
+//
+//        // when
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/post/search/member/{memberId}", memberId)
+//                        .param("page", String.valueOf(page))
+//                        .param("size", String.valueOf(size))
+//                        .contentType(MediaType.APPLICATION_JSON))
 //                .andDo(print())
+//                // then
 //                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.page").value(0))
-//                .andExpect(jsonPath("$.size").value(0))
+//                .andExpect(jsonPath("$.page").value(page))
+//                .andExpect(jsonPath("$.size").value(size))
 //                .andExpect(jsonPath("$.totalElementCount").value(1))
-//                .andExpect(jsonPath("$.postResponses[0].postId").value(1))
-//                .andExpect(jsonPath("$.postResponses[0].mainImageUrl").value("url1"))
 //                .andExpect(jsonPath("$.postResponses[0].title").value("title"))
-//                .andExpect(jsonPath("$.postResponses[0].memberName").value("nickname"))
 //                .andExpect(jsonPath("$.postResponses[0].content").value("content"))
-//                .andExpect(jsonPath("$.postResponses[0].viewCount").value(0));
-//    }
+//                .andExpect(jsonPath("$.postResponses[0].categoryType").value("AI"))
+//                .andExpect(jsonPath("$.postResponses[0].tagList[0]").value("tag1"));
 //
-//    private MyPostResponse createMockMyPostResponse() {
-//
-//        PostResponse postResponse = PostResponse.builder()
-//                .mainImageUrl("url")
-//                .content("c")
-//                .title("t")
-//                .memberName("m")
-//                .build())
-//        return new MyPostResponse(0, 0, 1, List.of(postResponse));
 //    }
-//
-//    @Builder
-//    private record PostResponse(
-//            Long postId,
-//            String mainImageUrl,
-//            String title,
-//            String memberName,
-//            @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-//            LocalDateTime registerDate,
-//            String content,
-//            int viewCount
-//    ) {
-//    }
+
+
 }

@@ -25,9 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = CommentController.class,
-excludeFilters = {
-@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
-})
+    excludeFilters = {
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
+    })
 @WithMockUser
 class CommentControllerTest {
 
@@ -73,6 +73,7 @@ class CommentControllerTest {
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.post("/api/comment")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

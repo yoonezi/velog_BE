@@ -30,7 +30,7 @@ public class PostLikeSearchController {
         {
             return SearchPostLikeResponse.of(postLike.get());
         } else {
-            throw new ApiException(ErrorCode.LIKE_STATUS_UNLIKED);
+            return SearchPostLikeResponse.empty();
         }
     }
 }

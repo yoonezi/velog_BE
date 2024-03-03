@@ -8,10 +8,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.velog.api.controller.post.dto.request.PostSearchCondition;
 import com.study.velog.api.controller.post.dto.request.PostSortType;
-import com.study.velog.api.controller.post.dto.response.MainPostsResponse;
-import com.study.velog.api.controller.post.dto.response.MyPostResponse;
-import com.study.velog.api.controller.post.dto.response.PostImageResponse;
-import com.study.velog.api.controller.post.dto.response.PostResponses;
+import com.study.velog.api.controller.post.dto.response.*;
 import com.study.velog.domain.member.QMember;
 import com.study.velog.domain.post.*;
 import com.study.velog.domain.tag.QTag;
@@ -43,6 +40,67 @@ public class PostQuerydslRepository {
                 .join(post.member, member)
                 .where(
                         serviced(),
+                        categoryEq(condition.getPostCategory()),
+                        memberIdEq(condition.getMemberId())
+                )
+                .limit(condition.getPageable().getPageSize())
+                .offset(condition.getPageable().getOffset())
+                .orderBy(createOrderSpecifier(condition.getPostSortType()))
+                .fetch();
+
+        long total = jpaQueryFactory.select(post.count())
+                .from(post)
+                .join(post.member, member)
+                .where(
+                    serviced(),
+                    categoryEq(condition.getPostCategory()),
+                    memberIdEq(condition.getMemberId())
+                )
+                .fetchOne();
+
+        List<PostResponses> response = jpaQueryFactory.selectFrom(post)
+                .join(post.member, member)
+                .leftJoin(post.postImageList, postImage)
+                .where(post.postId.in(postIds))
+                .distinct()
+                .transform(
+                    groupBy(post.postId)
+                        .list(
+                            Projections.constructor(
+                                PostResponses.class,
+                                post.postId,
+                                post.title,
+                                post.content,
+                                post.viewCount,
+                                post.categoryType,
+                                post.registerDate,
+                                post.member.memberId,
+                                post.member.nickname,
+                                post.postStatus,
+                                GroupBy.set(
+                                    Projections.constructor(
+                                        PostImageResponse.class,
+                                        postImage.url,
+                                        postImage.imageOrder
+                                    )
+                                )
+                            )
+                        )
+                    );
+        return new PageImpl<>(response, condition.getPageable(), total);
+    }
+
+    public Page<PostResponses> findPendingPosts(PostSearchCondition condition)
+    {
+        QPost post = QPost.post;
+        QMember member = QMember.member;
+        QPostImage postImage = QPostImage.postImage;
+
+        List<Long> postIds = jpaQueryFactory.select(post.postId)
+                .from(post)
+                .join(post.member, member)
+                .where(
+                        pending(),
                         categoryEq(condition.getPostCategory()),
                         memberIdEq(condition.getMemberId())
                 )
@@ -88,8 +146,8 @@ public class PostQuerydslRepository {
                                                         )
                                                 )
                                         )
-                                ));
-
+                                )
+                );
         return new PageImpl<>(response, condition.getPageable(), total);
     }
 
@@ -115,14 +173,31 @@ public class PostQuerydslRepository {
                 .orderBy(createOrderSpecifier(condition.getPostSortType()))
                 .fetch();
 
-        return MainPostsResponse.of(posts);
+        long count = jpaQueryFactory.select(post.count())
+                .from(post)
+                .join(post.member, member)
+                .where(
+                        serviced(),
+                        categoryEq(condition.getPostCategory())
+                )
+                .fetchFirst();
+
+        Page<Post> postPage = new PageImpl<>(posts, condition.getPageable(), count);
+        return MainPostsResponse.of(postPage);
     }
 
-    public MyPostResponse findMyPosts(PostSearchCondition condition)
+    public MemberPostsResponse findMyPosts(PostSearchCondition condition)
     {
         Page<PostResponses> response = findAllPosts(condition);
-        return MyPostResponse.of(response);
+        return MemberPostsResponse.of(response);
     }
+
+    public MyPendingPostsResponse findMyPendingPosts(PostSearchCondition condition)
+    {
+        Page<PostResponses> response = findPendingPosts(condition);
+        return MyPendingPostsResponse.of(response);
+    }
+
 
     private BooleanExpression categoryEq(PostCategory postCategory)
     {
@@ -132,6 +207,10 @@ public class PostQuerydslRepository {
     private BooleanExpression serviced()
     {
         return QPost.post.postStatus.eq(PostStatus.SERVICED);
+    }
+    private BooleanExpression pending()
+    {
+        return QPost.post.postStatus.eq(PostStatus.PENDING);
     }
 
     private OrderSpecifier createOrderSpecifier(PostSortType sortType)
@@ -157,6 +236,51 @@ public class PostQuerydslRepository {
                 .leftJoin(post.postImageList, postImage).fetchJoin()
                 .leftJoin(postTags.tag, tag).fetchJoin()
                 .where(post.postId.eq(postId).and(post.postStatus.eq(PostStatus.SERVICED)))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    public Optional<Post> findMyPostWithFetch(Long postId, Long memberId)
+    {
+        QPost post = QPost.post;
+        QMember member = QMember.member;
+        QPostTag postTags = QPostTag.postTag;
+        QTag tag = QTag.tag;
+        QPostImage postImage = QPostImage.postImage;
+
+        Post result = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.member, member).fetchJoin()
+                .leftJoin(post.postTags, postTags).fetchJoin()
+                .leftJoin(post.postImageList, postImage).fetchJoin()
+                .leftJoin(postTags.tag, tag).fetchJoin()
+                .where(
+                        post.postId.eq(postId)
+                                .and(member.memberId.eq(memberId))
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    public Optional<Post> findMyPendingPostWithFetch(Long postId, Long memberId)
+    {
+        QPost post = QPost.post;
+        QMember member = QMember.member;
+        QPostTag postTags = QPostTag.postTag;
+        QTag tag = QTag.tag;
+        QPostImage postImage = QPostImage.postImage;
+
+        Post result = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.member, member).fetchJoin()
+                .leftJoin(post.postTags, postTags).fetchJoin()
+                .leftJoin(post.postImageList, postImage).fetchJoin()
+                .leftJoin(postTags.tag, tag).fetchJoin()
+                .where(
+                        post.postId.eq(postId)
+                                .and(post.postStatus.eq(PostStatus.PENDING))
+                                .and(member.memberId.eq(memberId))
+                )
                 .fetchOne();
 
         return Optional.ofNullable(result);

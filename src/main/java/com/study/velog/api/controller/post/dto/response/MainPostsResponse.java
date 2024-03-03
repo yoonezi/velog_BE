@@ -5,6 +5,7 @@ import com.study.velog.domain.post.Post;
 import com.study.velog.domain.post.PostStatus;
 import com.study.velog.domain.type.PostCategory;
 import lombok.Builder;
+import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 public record MainPostsResponse(
         int page,
         int size,
+        long totalCount,
         List<PostResponse> postResponses
 ) {
 
-    public static MainPostsResponse of(List<Post> posts)
+    public static MainPostsResponse of(Page<Post> posts)
     {
-        List<PostResponse> postResponses = posts.stream()
+        List<PostResponse> postResponses = posts.getContent().stream()
                 .filter(post -> post.getPostStatus() == PostStatus.SERVICED)
                 .map(post -> new PostResponse(
                         post.getPostId(),
@@ -40,8 +42,9 @@ public record MainPostsResponse(
                 .collect(Collectors.toList());
 
         return MainPostsResponse.builder()
-                .page(0)
-                .size(0)
+                .page(posts.getPageable().getPageNumber())
+                .size(posts.getSize())
+                .totalCount(posts.getTotalElements())
                 .postResponses(postResponses)
                 .build();
     }

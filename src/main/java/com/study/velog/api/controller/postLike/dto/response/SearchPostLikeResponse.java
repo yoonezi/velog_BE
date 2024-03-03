@@ -18,4 +18,13 @@ public record SearchPostLikeResponse (
                 postLike.getLikeStatus()
         );
     }
+
+    public static SearchPostLikeResponse empty()
+    {
+        return new SearchPostLikeResponse(
+                null,
+                null,
+                LikeStatus.UNLIKE
+        );
+    }
 }

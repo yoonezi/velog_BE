@@ -18,7 +18,8 @@ public record CreatePostRequest (
         List<String> tagList,
         @NotNull(message = "카테고리는 필수입니다.")
         PostCategory categoryType,
-        List<CreatePostImageRequest> postImageRequestList
+        List<CreatePostImageRequest> postImageRequestList,
+        String postStatus
 
 ) {
     public CreatePostServiceRequest toServiceDto()
@@ -33,6 +34,7 @@ public record CreatePostRequest (
                 .tagList(this.tagList)
                 .categoryType(this.categoryType)
                 .postImageRequestList(postImageList)
+                .postStatus(postStatus)
                 .build();
     }
 }

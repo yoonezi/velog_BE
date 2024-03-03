@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.UUID;
 
-@Primary
 @Service
 public class LocalPostImageUploadService implements PostImageUpload {
 

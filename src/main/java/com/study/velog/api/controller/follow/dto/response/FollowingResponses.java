@@ -31,7 +31,7 @@ public record FollowingResponses(
             return new FollowingResponse(
                     member.getMemberId(),
                     member.getNickname(),
-                    member.getNickname()
+                    member.getEmail()
             );
         }
     }

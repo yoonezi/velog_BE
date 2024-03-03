@@ -30,6 +30,7 @@ public class Post extends BaseTimeEntity {
 
     private String title;
 
+    @Column(columnDefinition="TEXT")
     private String content;
 
     @BatchSize(size = 100)
@@ -81,6 +82,21 @@ public class Post extends BaseTimeEntity {
                 .title(title)
                 .categoryType(categoryType)
                 .postStatus(PostStatus.SERVICED)
+                .build();
+    }
+
+    public static Post pending(
+            Member member,
+            String content,
+            String title,
+            PostCategory categoryType
+    ) {
+        return Post.builder()
+                .member(member)
+                .content(content)
+                .title(title)
+                .categoryType(categoryType)
+                .postStatus(PostStatus.PENDING)
                 .build();
     }
 

@@ -9,10 +9,7 @@ import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberRepository;
-import com.study.velog.domain.post.Post;
-import com.study.velog.domain.post.PostImage;
-import com.study.velog.domain.post.PostRepository;
-import com.study.velog.domain.post.PostTag;
+import com.study.velog.domain.post.*;
 import com.study.velog.domain.tag.Tag;
 import com.study.velog.domain.tag.TagRepository;
 import com.study.velog.repository.PostQuerydslRepository;
@@ -43,7 +40,12 @@ public class PostService {
         Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Post post = Post.create(member, request.content(), request.title(), request.categoryType());
+        Post post;
+        if (request.postStatus().equals("SERVICED")) {
+            post = Post.create(member, request.content(), request.title(), request.categoryType());
+        } else {
+            post = Post.pending(member, request.content(), request.title(), request.categoryType());
+        }
 
         List<PostTag> postTags = createPostTagList(request.tagList());
         postTags.forEach(post::addPostTag);
@@ -96,9 +98,7 @@ public class PostService {
         Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
-//        Post post = postRepository.findPostWithFetch(request.postId())
-//                .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
-        Post post = postQuerydslRepository.findPostWithFetch(request.postId())
+        Post post = postQuerydslRepository.findMyPostWithFetch(request.postId(), member.getMemberId())
                 .orElseThrow(() -> new ApiException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getMemberId().equals(member.getMemberId()))

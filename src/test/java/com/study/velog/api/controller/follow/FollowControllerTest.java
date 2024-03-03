@@ -1,14 +1,12 @@
-package com.study.velog.api.controller.postLike;
+package com.study.velog.api.controller.follow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.velog.api.controller.postLike.dto.request.CreatePostLikeRequest;
-import com.study.velog.api.service.postLike.PostLikeService;
-import com.study.velog.config.AuthUtil;
+import com.study.velog.api.service.follow.FollowService;
 import com.study.velog.config.security.filter.JWTCheckFilter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,22 +17,22 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.Mockito.mockStatic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = PostLikeController.class,
+@WebMvcTest(controllers = FollowController.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
         })
 @WithMockUser
-class PostLikeControllerTest {
-
+class FollowControllerTest {
     @MockBean
-    PostLikeService postLikeService;
+    FollowService followService;
+
 
     @Autowired
     MockMvc mockMvc;
@@ -42,29 +40,20 @@ class PostLikeControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    private MockedStatic<AuthUtil> authUtilMockedStatic;
-
-    @BeforeEach
-    void beforeEach()
-    {
-        authUtilMockedStatic = mockStatic(AuthUtil.class);
-    }
-
     @Test
-    void like() throws Exception
-    {
+    void saveFollow() throws Exception {
         // given
-        CreatePostLikeRequest request = CreatePostLikeRequest.builder()
-                .postId(1L)
-                .build();
+        BDDMockito.given(followService.follow(Mockito.any()))
+                .willReturn(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/postLike/1")
-                        .content(objectMapper.writeValueAsString(request))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/follow/2")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 // then
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("1"));
+        ;
     }
 }

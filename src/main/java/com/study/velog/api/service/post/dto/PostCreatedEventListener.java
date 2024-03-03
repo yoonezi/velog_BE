@@ -25,7 +25,6 @@ public class PostCreatedEventListener {
     @TransactionalEventListener
     public void handle(PostCreatedEvent postCreatedEvent)
     {
-        log.info("thread 가 궁금하다");
         Post post = postRepository.findById(postCreatedEvent.getPostId()).orElseThrow();
 
         postSearchRepository.save(PostSearch.builder()

@@ -20,4 +20,7 @@ public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
     // 나를 팔로우 하는 사람들 가져오기 = 팔로워
     @Query("select f FROM Follow f WHERE f.followeeId = :memberId")
     List<Follow> findFollower(@Param("memberId") Long memberId);
+
+    int countByFollowerId(Long memberId);
+    int countByFolloweeId(Long memberId);
 }

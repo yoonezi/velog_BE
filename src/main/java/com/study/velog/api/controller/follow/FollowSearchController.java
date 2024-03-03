@@ -1,8 +1,8 @@
 package com.study.velog.api.controller.follow;
 
+import com.study.velog.api.controller.follow.dto.response.FollowCountResponses;
 import com.study.velog.api.controller.follow.dto.response.FollowerResponses;
 import com.study.velog.api.controller.follow.dto.response.FollowingResponses;
-import com.study.velog.config.AuthUtil;
 import com.study.velog.config.exception.ApiException;
 import com.study.velog.config.exception.ErrorCode;
 import com.study.velog.domain.follow.Follow;
@@ -24,46 +24,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/follow/search")
 public class FollowSearchController {
 
-
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
 
-    @GetMapping("/following")
-    public FollowingResponses findFollowing()
+    @GetMapping("/followCount/{memberEmail}")
+    public FollowCountResponses findFollowCount(@PathVariable String memberEmail)
     {
-        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
+        Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Follow> followers = followRepository.findFollowing(member.getMemberId());
+        int followerId = followRepository.countByFollowerId(member.getMemberId());
+        int followingId = followRepository.countByFolloweeId(member.getMemberId());
 
-        Set<Long> followingIds = followers.stream()
-                .map(Follow::getFolloweeId)
-                .collect(Collectors.toSet());
-
-        List<Member> followingMembers = memberRepository.findAllById(followingIds);
-
-        return FollowingResponses.of(followingMembers);
-    }
-
-    @GetMapping("/follower")
-    public FollowerResponses findFollower()
-    {
-        Member member = memberRepository.findByEmail(AuthUtil.currentUserEmail())
-                .orElseThrow(() -> new ApiException(ErrorCode.MEMBER_NOT_FOUND));
-
-        List<Follow> followers = followRepository.findFollower(member.getMemberId());
-
-        Set<Long> followerIds = followers.stream()
-                .map(Follow::getFolloweeId)
-                .collect(Collectors.toSet());
-
-        List<Member> followerMembers = memberRepository.findAllById(followerIds);
-
-        return FollowerResponses.of(followerMembers);
+        return FollowCountResponses.of(member.getMemberId(), memberEmail ,followerId, followingId);
     }
 
     @GetMapping("/following/{memberEmail}")
-    // 멤버가 팔로우 하는 사람들 찾기 = 팔로잉
     public FollowingResponses findMemberFollowing(@PathVariable String memberEmail)
     {
         Member member = memberRepository.findByEmail(memberEmail)
@@ -76,13 +52,10 @@ public class FollowSearchController {
                 .collect(Collectors.toSet());
 
         List<Member> followingMembers = memberRepository.findAllById(followingIds);
-
         return FollowingResponses.of(followingMembers);
     }
 
-    //TODO email
     @GetMapping("/follower/{memberEmail}")
-    // 멤버가 팔로우 하는 사람들 찾기 = 팔로워
     public FollowerResponses findMemberFollower(@PathVariable String memberEmail)
     {
         Member member = memberRepository.findByEmail(memberEmail)
@@ -91,11 +64,10 @@ public class FollowSearchController {
         List<Follow> followers = followRepository.findFollower(member.getMemberId());
 
         Set<Long> followerIds = followers.stream()
-                .map(Follow::getFolloweeId)
+                .map(Follow::getFollowerId)
                 .collect(Collectors.toSet());
 
         List<Member> followerMembers = memberRepository.findAllById(followerIds);
-
         return FollowerResponses.of(followerMembers);
     }
 }

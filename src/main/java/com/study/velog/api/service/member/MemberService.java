@@ -11,6 +11,7 @@ import com.study.velog.config.security.TokenProvider;
 import com.study.velog.domain.member.Member;
 import com.study.velog.domain.member.MemberDTO;
 import com.study.velog.domain.member.MemberRepository;
+import com.study.velog.domain.member.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,11 @@ public class MemberService {
     public AuthLoginSuccessResponse login(AuthLoginSuccessRequest request)
     {
         Member member = memberRepository.findByEmail(request.email()).orElseThrow();
+
+        if(member.getMemberStatus() == MemberStatus.DELETED)
+        {
+            throw new ApiException(ErrorCode.MEMBER_STATUS_DELETED);
+        }
 
         if(!member.matchPassword(request.password(), passwordEncoder))
         {

@@ -15,7 +15,6 @@ public class FollowController {
     @PostMapping("/{followeeId}")
     public Long saveFollow(@PathVariable Long followeeId)
     {
-//        FollowServiceRequest serviceDto = FollowRequest.toServiceDto(request);
         return followService.follow(followeeId);
     }
 

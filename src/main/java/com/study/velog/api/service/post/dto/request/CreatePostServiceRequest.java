@@ -12,5 +12,6 @@ public record CreatePostServiceRequest(
         String content,
         List<String> tagList,
         PostCategory categoryType,
-        List<CreatePostImageServiceRequest> postImageRequestList
+        List<CreatePostImageServiceRequest> postImageRequestList,
+        String postStatus
 ) {}

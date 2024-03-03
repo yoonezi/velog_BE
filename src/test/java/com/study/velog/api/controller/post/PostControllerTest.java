@@ -5,12 +5,18 @@ import com.google.common.collect.Lists;
 import com.study.velog.api.controller.post.dto.request.CreatePostRequest;
 import com.study.velog.api.controller.post.dto.request.UpdatePostRequest;
 import com.study.velog.api.service.post.PostService;
+import com.study.velog.config.security.filter.JWTCheckFilter;
 import com.study.velog.domain.type.PostCategory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -19,7 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(controllers = PostController.class)
+@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = PostController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JWTCheckFilter.class)
+        })
+@WithMockUser
 class PostControllerTest {
 
     @MockBean
