@@ -20,7 +20,7 @@
 ## ERD
 <img width="2186" alt="velogerd" src="https://github.com/yoonezi/velog_BE/assets/101792929/d372e4b0-92ee-4db2-b2f9-e5091fa08554">
 
-<br/>
+<br/><br/>
 
 ## 프로젝트 구현과정 및 고려사항
   - 피드 조회 성능 개선
@@ -38,12 +38,14 @@
   - Test
       - @SpringBootTest를 이용한 통합테스트
       - @DataJpaTest, @WebMvcTest를 이용한 슬라이드 테스트
-   
+
+<br/><br/>
+
 ## ✨ Velog FE
 화면 구현에 대한 자세한 설명은 아래 링크를 참고해주세요!
 https://github.com/yoonezi/velog_FE
 
-<br>
+<br/><br/>
 
 # 🖥️ 결과물 <a name = "result"></a>
 ## 홈
