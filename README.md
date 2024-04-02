@@ -42,7 +42,7 @@
 <br/><br/>
 
 ## ✨ Velog FE
-화면 구현에 대한 자세한 설명은 아래 링크를 참고해주세요!
+화면 구현에 대한 자세한 설명은 아래 링크를 참고해주세요!  
 https://github.com/yoonezi/velog_FE
 
 <br/><br/>
